@@ -237,8 +237,8 @@ public class EditCommand extends Command {
         }
 
         /**
-         * Sets {@code tags} to this object's {@code tags}. A defensive copy of {@code tags} is used
-         * internally.
+         * Sets {@code tags} to this object's {@code tags}.
+         * A defensive copy of {@code tags} is used internally.
          */
         public void setTags(Set<Tag> tags) {
             this.tags = (tags != null) ? new HashSet<>(tags) : null;
@@ -277,9 +277,16 @@ public class EditCommand extends Command {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this).add("name", name).add("gender", gender).add("dob", dob)
-                    .add("phone", phone).add("email", email).add("address", address)
-                    .add("location", location).add("tags", tags).toString();
+            return new ToStringBuilder(this)
+                    .add("name", name)
+                    .add("gender", gender)
+                    .add("dob", dob)
+                    .add("phone", phone)
+                    .add("email", email)
+                    .add("address", address)
+                    .add("location", location)
+                    .add("tags", tags)
+                    .toString();
         }
     }
 }

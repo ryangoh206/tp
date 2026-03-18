@@ -90,9 +90,9 @@ public class NoteCommand extends Command {
     }
 
     /**
-     * Generates a command execution success message based on the mode and note content. - Append
-     * mode: shows "Note appended" - Replace/Delete mode: shows "Note added" if content is
-     * non-empty, "Note deleted" if empty
+     * Generates a command execution success message based on the mode and note content.
+     * - Append mode: shows "Note appended"
+     * - Replace/Delete mode: shows "Note added" if content is non-empty, "Note deleted" if empty
      *
      * @param editedPerson the person that was edited (only note field changed)
      * @param personToEdit the original person before editing
