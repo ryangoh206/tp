@@ -34,35 +34,9 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Every field must be present and not null.
-     * When ID is unknown, set it to null.
-     */
-    public Person(Name name,
-            Gender gender,
-            DateOfBirth dob,
-            Phone phone,
-            Email email,
-            Address address,
-            Location location,
-            Note note,
-            Set<Tag> tags) {
-        requireAllNonNull(name, gender, phone, email, address, location, note, tags);
-        this.id = null;
-        this.name = name;
-        this.gender = gender;
-        this.dob = dob;
-        this.phone = phone;
-        this.email = email;
-        this.address = address;
-        this.location = location;
-        this.note = note;
-        this.tags.addAll(tags);
-    }
-
-    /**
      * Returns a Person object for use when the ID is known
      */
-    private Person(ClientId id,
+    public Person(ClientId id,
             Name name,
             Gender gender,
             DateOfBirth dob,
@@ -85,22 +59,8 @@ public class Person {
         this.tags.addAll(tags);
     }
 
-    public Person withId(String id) {
-        assert this.id == null : "ID should be created once and never overwritten";
-
-        ClientId newId = new ClientId(id);
-
-        return new Person(newId,
-                this.name,
-                this.gender,
-                this.dob,
-                this.phone,
-                this.email,
-                this.address,
-                this.location,
-                this.note,
-                this.tags
-        );
+    public ClientId getId() {
+        return id;
     }
 
     public Name getName() {
