@@ -33,7 +33,7 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Returns a Person object for use when the ID is known
+     * Constructs a {@code Person}.
      */
     public Person(ClientId id,
             Name name,

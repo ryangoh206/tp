@@ -2,12 +2,11 @@ package seedu.address.model.workout;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.ClientId;
 import seedu.address.model.person.Location;
-import seedu.address.model.person.Person;
 
 /**
  * Represents a singular Workout Session.
@@ -15,19 +14,20 @@ import seedu.address.model.person.Person;
  */
 public class WorkoutLog {
 
-    private final Person trainee;
-    private final LocalDateTime time;
+    private final ClientId traineeId;
+    private final WorkoutTime time;
     private final Location location;
 
     /**
      * Constructs a WorkoutLog object. All fields must be non-null.
+     *
      * @param trainee Person that performed the workout
      * @param time Time during which the workout took place
      * @param location Location of the Gym at which the workout took place
      */
-    public WorkoutLog(Person trainee, LocalDateTime time, Location location) {
-        requireAllNonNull(trainee, time, location);
-        this.trainee = trainee;
+    public WorkoutLog(ClientId traineeId, WorkoutTime time, Location location) {
+        requireAllNonNull(traineeId, time, location);
+        this.traineeId = traineeId;
         this.time = time;
         this.location = location;
     }
@@ -35,8 +35,8 @@ public class WorkoutLog {
     /**
      * Returns the Person that did the workout
      */
-    public Person getTrainee() {
-        return trainee;
+    public ClientId getTrainee() {
+        return traineeId;
     }
 
     /**
@@ -49,7 +49,7 @@ public class WorkoutLog {
     /**
      * Returns the time during which the workout took place
      */
-    public LocalDateTime getTime() {
+    public WorkoutTime getTime() {
         return time;
     }
 
@@ -64,20 +64,20 @@ public class WorkoutLog {
         }
 
         WorkoutLog otherLog = (WorkoutLog) other;
-        return trainee.equals(otherLog.trainee)
+        return traineeId.equals(otherLog.traineeId)
                 && location.equals(otherLog.location)
                 && time.equals(otherLog.time);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(trainee, location, time);
+        return Objects.hash(traineeId, location, time);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("trainee", trainee)
+                .add("traineeId", traineeId)
                 .add("location", location)
                 .add("time", time)
                 .toString();
