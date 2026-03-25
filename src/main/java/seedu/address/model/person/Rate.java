@@ -45,7 +45,7 @@ public class Rate {
     public static boolean isValidRate(String test) {
         requireNonNull(test);
         if (test.trim().isEmpty()) {
-            return true; // Allow empty string to indicate no rate set
+            return true; // Allow empty string to indicate no rate set and allow testing
         }
         if (!test.matches(VALIDATION_REGEX)) {
             return false;
