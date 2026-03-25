@@ -30,7 +30,10 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.BodyFatPercentage;
+import seedu.address.model.person.Height;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Weight;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
@@ -176,7 +179,12 @@ public class LogicManagerTest {
                 + EMAIL_DESC_AMY
                 + ADDRESS_DESC_AMY
                 + LOCATION_DESC_AMY;
-        Person expectedPerson = new PersonBuilder(AMY).withTags().build();
+        Person expectedPerson = new PersonBuilder(AMY)
+                .withHeight(Height.DEFAULT_HEIGHT_TEXT)
+                .withWeight(Weight.DEFAULT_WEIGHT_TEXT)
+                .withBodyFatPercentage(BodyFatPercentage.DEFAULT_BODY_FAT_TEXT)
+                .withTags()
+                .build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addPerson(expectedPerson);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);

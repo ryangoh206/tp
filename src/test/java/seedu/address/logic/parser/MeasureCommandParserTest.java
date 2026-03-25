@@ -25,38 +25,59 @@ public class MeasureCommandParserTest {
 
     private final MeasureCommandParser parser = new MeasureCommandParser();
 
+    /**
+     * Parses input missing the required index and verifies failure.
+     */
     @Test
     public void parse_missingIndex_failure() {
         assertParseFailure(parser, HEIGHT_DESC_AMY,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, MeasureCommand.MESSAGE_USAGE));
     }
 
+    /**
+     * Parses input with index but without any measurement prefix and verifies failure.
+     */
     @Test
     public void parse_noMeasurementPrefix_failure() {
         assertParseFailure(parser, "1", MeasureCommand.MESSAGE_NOT_EDITED);
     }
 
+    /**
+     * Parses input with an invalid height value and verifies failure.
+     */
     @Test
     public void parse_invalidHeight_failure() {
         assertParseFailure(parser, "1 " + PREFIX_HEIGHT + "49.9", Height.MESSAGE_CONSTRAINTS);
     }
 
+    /**
+     * Parses input with an invalid weight value and verifies failure.
+     */
     @Test
     public void parse_invalidWeight_failure() {
         assertParseFailure(parser, "1 " + PREFIX_WEIGHT + "10.0", Weight.MESSAGE_CONSTRAINTS);
     }
 
+    /**
+     * Parses input with an invalid body fat percentage value and verifies failure.
+     */
     @Test
     public void parse_invalidBodyFat_failure() {
         assertParseFailure(parser, "1 " + PREFIX_BODY_FAT + "90.0", BodyFatPercentage.MESSAGE_CONSTRAINTS);
     }
 
+    /**
+     * Parses input with duplicate measurement prefixes and verifies failure.
+     */
     @Test
     public void parse_duplicatePrefix_failure() {
         assertParseFailure(parser, "1 " + HEIGHT_DESC_AMY + " " + PREFIX_HEIGHT + "170.0",
                 getErrorMessageForDuplicatePrefixes(PREFIX_HEIGHT));
     }
 
+    /**
+     * Parses input with a single valid measurement prefix and verifies success.
+     */
     @Test
     public void parse_validSinglePrefix_success() {
         MeasureCommand expectedCommand = new MeasureCommand(INDEX_FIRST_PERSON,
@@ -67,6 +88,9 @@ public class MeasureCommandParserTest {
         assertParseSuccess(parser, "1" + HEIGHT_DESC_AMY, expectedCommand);
     }
 
+    /**
+     * Parses input with multiple valid measurement prefixes and verifies success.
+     */
     @Test
     public void parse_validMultiplePrefixes_success() {
         MeasureCommand expectedCommand = new MeasureCommand(INDEX_FIRST_PERSON,

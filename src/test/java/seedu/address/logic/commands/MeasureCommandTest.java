@@ -35,6 +35,9 @@ public class MeasureCommandTest {
 
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
+    /**
+     * Executes measure on an unfiltered list with all measurement fields and verifies success.
+     */
     @Test
     public void execute_updateMeasurementsUnfilteredList_success() {
         Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -57,6 +60,9 @@ public class MeasureCommandTest {
         assertCommandSuccess(measureCommand, model, expectedMessage, expectedModel);
     }
 
+    /**
+     * Executes measure on a filtered list with partial measurement updates and verifies success.
+     */
     @Test
     public void execute_updateMeasurementsFilteredList_success() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
@@ -79,6 +85,9 @@ public class MeasureCommandTest {
         assertCommandSuccess(measureCommand, model, expectedMessage, expectedModel);
     }
 
+    /**
+     * Executes measure with an out-of-bounds index on an unfiltered list and verifies failure.
+     */
     @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
@@ -90,6 +99,9 @@ public class MeasureCommandTest {
         assertCommandFailure(measureCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
+    /**
+     * Executes measure with an out-of-bounds index on a filtered list and verifies failure.
+     */
     @Test
     public void execute_invalidPersonIndexFilteredList_failure() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
@@ -105,6 +117,9 @@ public class MeasureCommandTest {
         assertCommandFailure(measureCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
+    /**
+     * Verifies equality behavior for {@code MeasureCommand}.
+     */
     @Test
     public void equals() {
         final MeasureCommand standardCommand = new MeasureCommand(INDEX_FIRST_PERSON,
@@ -116,22 +131,28 @@ public class MeasureCommandTest {
                 Optional.of(new Height(VALID_HEIGHT_AMY)),
                 Optional.of(new Weight(VALID_WEIGHT_AMY)),
                 Optional.of(new BodyFatPercentage(VALID_BODY_FAT_AMY)));
+        // Same index and same optional measurements indicates commands are equal.
         assertTrue(standardCommand.equals(sameValuesCommand));
 
+        // Same object reference should always be equal.
         assertTrue(standardCommand.equals(standardCommand));
+        // Command should not be equal to null.
         assertFalse(standardCommand.equals(null));
+        // Command should not be equal to objects of a different type.
         assertFalse(standardCommand.equals(new ClearCommand()));
 
         MeasureCommand differentIndexCommand = new MeasureCommand(INDEX_SECOND_PERSON,
                 Optional.of(new Height(VALID_HEIGHT_AMY)),
                 Optional.of(new Weight(VALID_WEIGHT_AMY)),
                 Optional.of(new BodyFatPercentage(VALID_BODY_FAT_AMY)));
+        // Different target index -> commands are not equal.
         assertFalse(standardCommand.equals(differentIndexCommand));
 
         MeasureCommand differentMeasurementCommand = new MeasureCommand(INDEX_FIRST_PERSON,
                 Optional.of(new Height("170.0")),
                 Optional.of(new Weight(VALID_WEIGHT_AMY)),
                 Optional.of(new BodyFatPercentage(VALID_BODY_FAT_AMY)));
+        // Different measurement payload -> commands are not equal.
         assertFalse(standardCommand.equals(differentMeasurementCommand));
     }
 }
