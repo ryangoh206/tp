@@ -11,7 +11,7 @@ public class Height {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Height should be a number in cm between 50.0 and 300.0, with up to 1 decimal place.";
-    public static final String DEFAULT_HEIGHT_TEXT = "Height not set";
+    public static final String DEFAULT_HEIGHT_TEXT = "-";
     private static final String VALIDATION_REGEX = "\\d+(?:\\.\\d)?";
 
     public final String value;

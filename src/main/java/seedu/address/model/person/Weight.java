@@ -11,7 +11,7 @@ public class Weight {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Weight should be a number in kg between 20.0 and 500.0, with up to 1 decimal place.";
-    public static final String DEFAULT_WEIGHT_TEXT = "Weight not set";
+    public static final String DEFAULT_WEIGHT_TEXT = "-";
     private static final String VALIDATION_REGEX = "\\d+(?:\\.\\d)?";
 
     public final String value;

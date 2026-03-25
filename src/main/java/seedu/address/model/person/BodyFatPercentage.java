@@ -11,7 +11,7 @@ public class BodyFatPercentage {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Body fat percentage should be a number between 1.0 and 75.0, with up to 1 decimal place.";
-    public static final String DEFAULT_BODY_FAT_TEXT = "Body fat percentage not set";
+    public static final String DEFAULT_BODY_FAT_TEXT = "-";
     private static final String VALIDATION_REGEX = "\\d+(?:\\.\\d)?";
 
     public final String value;
