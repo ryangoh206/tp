@@ -24,6 +24,7 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -70,7 +71,8 @@ public class AddCommandParser implements Parser<AddCommand> {
                 argMultimap.getValue(PREFIX_LOCATION).orElse("No Location Specified"));
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
-        Person person = new Person(name, gender, dob, phone, email, address, location, new Note(EMPTY_NOTE), tagList);
+        Person person = new Person(name, gender, dob, phone, email, address, location,
+                new Note(EMPTY_NOTE), new Status("active"), tagList);
 
         return new AddCommand(person);
     }

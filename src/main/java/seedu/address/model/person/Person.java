@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -44,7 +43,7 @@ public class Person {
             Note note,
             Status status,
             Set<Tag> tags) {
-        requireAllNonNull(name, gender, phone, email, address, location, note, tags);
+        requireAllNonNull(name, gender, dob, phone, email, address, location, note, status, tags);
         this.name = name;
         this.gender = gender;
         this.dob = dob;

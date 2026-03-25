@@ -9,6 +9,25 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Status {
 
+    /**
+     * Represents the possible values a person's status can take on.
+     */
+    public enum StatusEnum {
+        ACTIVE("Active"),
+        INACTIVE("Inactive");
+
+        private final String displayValue;
+
+        StatusEnum(String displayValue) {
+            this.displayValue = displayValue;
+        }
+
+        @Override
+        public String toString() {
+            return displayValue;
+        }
+    }
+
     public static final String MESSAGE_CONSTRAINTS =
             "Status can only be 'active' or 'inactive' (case-insensitive)";
 
@@ -40,7 +59,7 @@ public class Status {
 
     @Override
     public String toString() {
-        return value.toString().charAt(0) + value.toString().substring(1).toLowerCase();
+        return value.toString();
     }
 
     @Override
