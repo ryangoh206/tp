@@ -11,7 +11,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.Status;
 
 /**
  * An UI component that displays a summary of a {@code Person} in the client list.
@@ -66,6 +65,8 @@ public class PersonCard extends UiPart<Region> {
         switch (person.getStatus().value) {
         case ACTIVE -> status.getStyleClass().add("cell_status_active");
         case INACTIVE -> status.getStyleClass().add("cell_status_inactive");
+        default -> throw new IllegalStateException(
+                "Unexpected status value: " + person.getStatus().value);
         }
         person.getTags().stream().sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
