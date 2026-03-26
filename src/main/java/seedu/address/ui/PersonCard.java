@@ -65,9 +65,8 @@ public class PersonCard extends UiPart<Region> {
         switch (person.getStatus().value) {
         case ACTIVE -> status.getStyleClass().add("cell_status_active");
         case INACTIVE -> status.getStyleClass().add("cell_status_inactive");
-        default -> {
-            // No status-specific style for future enum values.
-        }
+        default -> throw new IllegalStateException(
+                "Unexpected status value: " + person.getStatus().value);
         }
         person.getTags().stream().sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));

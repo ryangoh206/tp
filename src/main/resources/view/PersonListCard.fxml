@@ -42,4 +42,5 @@
             <FlowPane fx:id="tags" prefWrapLength="10" />
         </VBox>
     </GridPane>
+
 </HBox>
