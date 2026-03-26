@@ -21,6 +21,7 @@ import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Rate;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -40,6 +41,7 @@ class JsonAdaptedPerson {
     private final String location;
     private final String note;
     private final String rate;
+    private final String status;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
     /**
@@ -56,6 +58,7 @@ class JsonAdaptedPerson {
             @JsonProperty("location") String location,
             @JsonProperty("note") String note,
             @JsonProperty("rate") String rate,
+            @JsonProperty("status") String status,
             @JsonProperty("tags") List<JsonAdaptedTag> tags) {
         this.id = id;
         this.name = name;
@@ -67,6 +70,7 @@ class JsonAdaptedPerson {
         this.location = location;
         this.note = note;
         this.rate = rate;
+        this.status = status;
         if (tags != null) {
             this.tags.addAll(tags);
         }
@@ -86,6 +90,7 @@ class JsonAdaptedPerson {
         location = source.getLocation().value;
         note = source.getNote().value;
         rate = source.getRate().value;
+        status = source.getStatus().toString();
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList()));
@@ -183,6 +188,18 @@ class JsonAdaptedPerson {
         }
         final Rate modelRate = new Rate(rate);
 
+        // Handle migration for old data without status field
+        final Status modelStatus;
+        if (status == null) {
+            // Default to "active" for existing data without status field
+            modelStatus = new Status("active");
+        } else {
+            if (!Status.isValidStatus(status)) {
+                throw new IllegalValueException(Status.MESSAGE_CONSTRAINTS);
+            }
+            modelStatus = new Status(status);
+        }
+
         final Set<Tag> modelTags = new HashSet<>(personTags);
         return new Person(modelId,
                 modelName,
@@ -194,6 +211,7 @@ class JsonAdaptedPerson {
                 modelLocation,
                 modelNote,
                 modelRate,
+                modelStatus,
                 modelTags);
     }
 

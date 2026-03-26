@@ -35,6 +35,7 @@ import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Rate;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -118,10 +119,11 @@ public class EditCommand extends Command {
                 editPersonDescriptor.getLocation().orElse(personToEdit.getLocation());
         Note oldNote = personToEdit.getNote(); // Note is not editable through EditCommand
         Rate oldRate = personToEdit.getRate(); // Rate is not editable through EditCommand
+        Status oldStatus = personToEdit.getStatus(); // Status is not editable through EditCommand
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
         return new Person(fixedId, updatedName, updatedGender, updatedDob, updatedPhone,
-                updatedEmail, updatedAddress, updatedLocation, oldNote, oldRate, updatedTags);
+                updatedEmail, updatedAddress, updatedLocation, oldNote, oldRate, oldStatus, updatedTags);
     }
 
     @Override
@@ -158,6 +160,7 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private Location location;
+        private Note note;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -180,8 +183,7 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, gender, dob, phone, email, address, location,
-                    tags);
+            return CollectionUtil.isAnyNonNull(name, gender, dob, phone, email, address, location, tags);
         }
 
         public void setName(Name name) {

@@ -18,6 +18,7 @@ import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Rate;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.workout.WorkoutLog;
 import seedu.address.model.workout.WorkoutTime;
@@ -39,6 +40,7 @@ public class SampleDataUtil {
                     new Location("Anytime Fitness Geylang South East"),
                     new Note("Prefers morning workouts"),
                     new Rate("120.50"),
+                    new Status("active"),
                     getTagSet("friends")),
             new Person(
                     new ClientId("e6e66102-3112-45e3-9975-ed1e35a11c21"),
@@ -51,6 +53,7 @@ public class SampleDataUtil {
                     new Location("ActiveSG Gym @ Serangoon Central"),
                     new Note("Enjoys group fitness classes"),
                     new Rate("199.00"),
+                    new Status("active"),
                     getTagSet("colleagues", "friends")),
             new Person(
                     new ClientId("871891b6-7517-48f5-a0c6-3023e1e4a640"),
@@ -63,6 +66,7 @@ public class SampleDataUtil {
                     new Location("ActiveSG Gym @ Ang Mo Kio Community Centre"),
                     new Note("Interested in yoga"),
                     new Rate("80.00"),
+                    new Status("active"),
                     getTagSet("neighbours")),
             new Person(
                     new ClientId("b450537f-3619-459d-9d48-6a520a22f357"),
@@ -75,6 +79,7 @@ public class SampleDataUtil {
                     new Location("ActiveSG Gym @ Serangoon Central"),
                     new Note("Prefers evening workouts"),
                     new Rate("75.00"),
+                    new Status("active"),
                     getTagSet("family")),
             new Person(
                     new ClientId("5d3cf4c7-1d6f-4796-9817-d5d36e84d1a5"),
@@ -87,6 +92,7 @@ public class SampleDataUtil {
                     new Location("Tampines ActiveSG Gym"),
                     new Note("Enjoys swimming"),
                     new Rate("90.00"),
+                    new Status("active"),
                     getTagSet("classmates")),
             new Person(
                     new ClientId("2f65a198-a3f2-4467-b52b-c85d7768d712"),
@@ -99,6 +105,7 @@ public class SampleDataUtil {
                     new Location("Anytime Fitness Aljunied 119"),
                     new Note("Prefers morning workouts"),
                     new Rate("120.00"),
+                    new Status("active"),
                     getTagSet("colleagues"))
         };
     }

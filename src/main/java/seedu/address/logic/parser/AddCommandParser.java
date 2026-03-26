@@ -27,6 +27,7 @@ import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Rate;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -86,6 +87,7 @@ public class AddCommandParser implements Parser<AddCommand> {
                 location,
                 new Note(EMPTY_NOTE),
                 new Rate(EMPTY_RATE),
+                new Status("active"),
                 tagList);
 
         return new AddCommand(person);

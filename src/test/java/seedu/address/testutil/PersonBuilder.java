@@ -14,6 +14,7 @@ import seedu.address.model.person.Note;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Rate;
+import seedu.address.model.person.Status;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -32,6 +33,7 @@ public class PersonBuilder {
     public static final String DEFAULT_LOCATION = "ActiveSG @ Fernvale Square";
     public static final String DEFAULT_NOTE = "";
     public static final String DEFAULT_RATE = "";
+    public static final String DEFAULT_STATUS = "active";
 
     private ClientId id;
     private Name name;
@@ -43,6 +45,7 @@ public class PersonBuilder {
     private Location location;
     private Note note;
     private Rate rate;
+    private Status status;
     private Set<Tag> tags;
 
     /**
@@ -59,6 +62,7 @@ public class PersonBuilder {
         location = new Location(DEFAULT_LOCATION);
         note = new Note(DEFAULT_NOTE);
         rate = new Rate(DEFAULT_RATE);
+        status = new Status(DEFAULT_STATUS);
         tags = new HashSet<>();
     }
 
@@ -76,15 +80,8 @@ public class PersonBuilder {
         location = personToCopy.getLocation();
         note = personToCopy.getNote();
         rate = personToCopy.getRate();
+        status = personToCopy.getStatus();
         tags = new HashSet<>(personToCopy.getTags());
-    }
-
-    /**
-     * Sets the {@code ClientId} of the {@code Person} that we are building.
-     */
-    public PersonBuilder withId(String id) {
-        this.id = new ClientId(id);
-        return this;
     }
 
     /**
@@ -161,6 +158,14 @@ public class PersonBuilder {
     }
 
     /**
+     * Sets the {@code ClientId} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withId(String id) {
+        this.id = new ClientId(id);
+        return this;
+    }
+
+    /**
      * Sets the {@code Rate} of the {@code Person} that we are building.
      */
     public PersonBuilder withRate(String rate) {
@@ -168,8 +173,16 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code Status} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withStatus(String status) {
+        this.status = new Status(status);
+        return this;
+    }
+
     public Person build() {
-        return new Person(id, name, gender, dob, phone, email, address, location, note, rate, tags);
+        return new Person(id, name, gender, dob, phone, email, address, location, note, rate, status, tags);
     }
 
 }
