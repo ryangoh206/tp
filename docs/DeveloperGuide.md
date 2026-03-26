@@ -121,7 +121,7 @@ How the parsing works:
 ### Model component
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<puml src="diagrams/ModelClassDiagram.puml" width="600" />
+<puml src="diagrams/ModelClassDiagram.puml" />
 
 
 The `Model` component,
@@ -136,7 +136,7 @@ The `Model` component,
 
 **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
-<puml src="diagrams/BetterModelClassDiagram.puml" width="500" />
+<puml src="diagrams/BetterModelClassDiagram.puml" />
 
 </box>
 
@@ -162,7 +162,6 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
-<<<<<<< HEAD
 ### View command and client detail panel
 
 The `view` feature is implemented as a collaboration between `Logic` and `UI`:
@@ -178,7 +177,7 @@ The `view` feature is implemented as a collaboration between `Logic` and `UI`:
 * Detailed state shown after a successful `view INDEX` command.
 
 To keep the panel consistent with model updates, `MainWindow` also clears the detail panel after successful commands when the currently viewed person no longer exists (e.g., after a `delete` or `clear`).
-=======
+
 ### Sort feature
 
 #### Implementation
@@ -288,7 +287,6 @@ The three value classes enforce numeric range and format constraints (up to 1 de
 
 **Storage and Migration:**
 * `JsonAdaptedPerson` persists `height`, `weight`, and `bodyFatPercentage` in the data file and validates these values when converting to model objects.
->>>>>>> master
 
 ### \[Proposed\] Undo/redo feature
 
@@ -751,6 +749,36 @@ phrases.
 
 * 1c. Trainer requests to clear one or more measurement fields by passing empty prefixed values.
     * 1c1. PowerRoster clears the corresponding measurement fields.
+    * 1c2. PowerRoster confirms the successful update to the Trainer.
+
+      Use case ends.
+
+**Use case: UC11 \- Assign/Clear a Client's Workout Programme**
+**Preconditions: Trainer has launched PowerRoster. At least one client exists in the displayed list.**
+
+**MSS**
+
+1. Trainer requests to assign a workout programme to a specific client and provides a valid programme category.
+2. PowerRoster locates the client and validates the provided programme category.
+3. PowerRoster updates the client's workout programme.
+4. PowerRoster confirms the successful update to the Trainer.
+
+   Use case ends.
+
+**Extensions**
+
+* 2a. The specified identifier does not match any existing client.
+    * 2a1. PowerRoster informs the Trainer that the identifier was invalid.
+
+      Use case ends.
+
+* 2b. The programme category is invalid.
+    * 2b1. PowerRoster informs the Trainer of the validation error.
+
+      Use case ends.
+
+* 1c. Trainer requests to clear the client's workout programme by passing an empty prefixed value.
+    * 1c1. PowerRoster clears the client's workout programme.
     * 1c2. PowerRoster confirms the successful update to the Trainer.
 
       Use case ends.
