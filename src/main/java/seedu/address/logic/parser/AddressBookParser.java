@@ -103,7 +103,7 @@ public class AddressBookParser {
 
         case SortCommand.COMMAND_WORD:
             return new SortCommandParser().parse(arguments);
-        
+
         case LogCommand.COMMAND_WORD:
             return new LogCommandParser().parse(arguments);
 
