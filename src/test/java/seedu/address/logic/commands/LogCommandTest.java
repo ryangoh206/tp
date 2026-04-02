@@ -23,9 +23,9 @@ import seedu.address.model.UserPrefs;
 import seedu.address.model.WorkoutLogBook;
 
 public class LogCommandTest {
-   
+
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs(), new WorkoutLogBook());
-    
+
     @Test
     public void execute_validIndexUnfilteredList_success() {
         LogCommand logCommand = new LogCommand(INDEX_FIRST_PERSON, ALICE_LOG_1.getTime(), ALICE_LOG_1.getLocation());
