@@ -62,8 +62,8 @@ public class PersonComparators {
         COMPARATORS.put(ATTRIBUTE_LOCATION, (p1, p2) -> {
             String v1 = p1.getLocation().value;
             String v2 = p2.getLocation().value;
-            boolean u1 = v1.equalsIgnoreCase(Location.UNSPECIFIED_LOCATION);
-            boolean u2 = v2.equalsIgnoreCase(Location.UNSPECIFIED_LOCATION);
+            boolean u1 = v1.equals(Location.EMPTY_LOCATION);
+            boolean u2 = v2.equals(Location.EMPTY_LOCATION);
             if (u1 && u2) {
                 return 0;
             }
