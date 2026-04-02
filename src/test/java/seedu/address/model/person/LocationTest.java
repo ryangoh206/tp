@@ -20,6 +20,11 @@ public class LocationTest {
     }
 
     @Test
+    public void constructor_emptyLocation_success() {
+        assertTrue(new Location("").value.isEmpty());
+    }
+
+    @Test
     public void isValidLocation() {
         // null Location
         assertThrows(NullPointerException.class, () -> Location.isValidLocation(null));

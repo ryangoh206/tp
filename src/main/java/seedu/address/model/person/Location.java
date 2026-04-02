@@ -13,7 +13,7 @@ public class Location {
         "Locations can take any alphanumeric input and the @ symbol, "
         + "and it should not be blank";
 
-    public static final String UNSPECIFIED_LOCATION = "No Location Specified";
+    public static final String EMPTY_LOCATION = "";
 
     /*
      * The first character of the location must not be a whitespace,
@@ -32,7 +32,9 @@ public class Location {
      */
     public Location(String location) {
         requireNonNull(location);
-        checkArgument(isValidLocation(location), MESSAGE_CONSTRAINTS);
+        if (!location.isEmpty()) {
+            checkArgument(isValidLocation(location), MESSAGE_CONSTRAINTS);
+        }
         value = location;
     }
 

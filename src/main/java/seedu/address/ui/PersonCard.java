@@ -59,7 +59,8 @@ public class PersonCard extends UiPart<Region> {
         name.setText(person.getName().fullName);
         gender.setText(person.getGender().value.toString());
         phone.setText(PREFIX_PHONE_LABEL + person.getPhone().value);
-        gymLocation.setText(PREFIX_LOCATION_LABEL + person.getLocation().value);
+        gymLocation.setText(PREFIX_LOCATION_LABEL
+                + (person.getLocation().value.isEmpty() ? "N/A" : person.getLocation().value));
         status.setText(person.getStatus().value.toString());
         status.getStyleClass().removeAll("cell_status_active", "cell_status_inactive");
         switch (person.getStatus().value) {

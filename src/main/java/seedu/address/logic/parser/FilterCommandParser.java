@@ -25,12 +25,14 @@ public class FilterCommandParser implements Parser<FilterCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_LOCATION);
 
         List<String> locationKeywords = argMultimap.getAllValues(PREFIX_LOCATION).stream()
-                .map(String::trim)
-                .filter(value -> !value.isEmpty())
                 .map(value -> value.replaceAll("\\s+", " ").trim())
                 .collect(Collectors.toList());
 
         if (locationKeywords.isEmpty()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
+        }
+
+        if (locationKeywords.size() > 1 && locationKeywords.stream().anyMatch(String::isEmpty)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FilterCommand.MESSAGE_USAGE));
         }
 

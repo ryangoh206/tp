@@ -72,9 +72,17 @@ public class LocationContainsKeywordsPredicateTest {
         predicate = new LocationContainsKeywordsPredicate(Arrays.asList("12345", "alice@email.com", "Main Street"));
         assertFalse(predicate.test(new PersonBuilder().withLocation("Anytime Fitness Jurong").build()));
 
-        // Internal placeholder location should never be matched by filter
-        predicate = new LocationContainsKeywordsPredicate(Collections.singletonList("No Location Specified"));
-        assertFalse(predicate.test(new PersonBuilder().withLocation(Location.UNSPECIFIED_LOCATION).build()));
+        // Missing location should not be matched by regular location keywords
+        predicate = new LocationContainsKeywordsPredicate(Collections.singletonList("ActiveSG"));
+        assertFalse(predicate.test(new PersonBuilder().withLocation(Location.EMPTY_LOCATION).build()));
+
+        // Empty keyword should match missing location
+        predicate = new LocationContainsKeywordsPredicate(Collections.singletonList(""));
+        assertTrue(predicate.test(new PersonBuilder().withLocation(Location.EMPTY_LOCATION).build()));
+
+        // User-entered location text remains searchable as normal
+        predicate = new LocationContainsKeywordsPredicate(Collections.singletonList("No Location"));
+        assertTrue(predicate.test(new PersonBuilder().withLocation("No Location Here").build()));
     }
 
     @Test
