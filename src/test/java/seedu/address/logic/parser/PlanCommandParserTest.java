@@ -20,6 +20,9 @@ public class PlanCommandParserTest {
 
     private PlanCommandParser parser = new PlanCommandParser();
 
+    /**
+     * Parses valid wp/ inputs, including mixed-case values and normalized internal whitespace.
+     */
     @Test
     public void parse_planPrefix_success() {
         Index targetIndex = INDEX_FIRST_PERSON;
@@ -40,6 +43,9 @@ public class PlanCommandParserTest {
         assertParseSuccess(parser, userInput, expectedCommand);
     }
 
+    /**
+     * Fails when required index/arguments are missing.
+     */
     @Test
     public void parse_missingIndexOrParams_failure() {
         String expectedMessage =
@@ -52,6 +58,9 @@ public class PlanCommandParserTest {
         assertParseFailure(parser, PREFIX_PLAN + VALID_PLAN_AMY, expectedMessage);
     }
 
+    /**
+     * Fails when the plan prefix is missing.
+     */
     @Test
     public void parse_missingPrefix_failure() {
         String expectedMessage =
@@ -60,18 +69,27 @@ public class PlanCommandParserTest {
         assertParseFailure(parser, INDEX_FIRST_PERSON.getOneBased() + "", expectedMessage);
     }
 
+    /**
+     * Parses blank wp/ value as the default unassigned plan.
+     */
     @Test
     public void parse_blankPrefixedValue_failure() {
         PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, Plan.getDefaultPlan());
         assertParseSuccess(parser, INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "   ", expectedCommand);
     }
 
+    /**
+     * Fails when plan value is not one of the supported categories.
+     */
     @Test
     public void parse_invalidValue_failure() {
         assertParseFailure(parser, INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "Bench Press",
                 Plan.MESSAGE_CONSTRAINTS);
     }
 
+    /**
+     * Parses valid arguments into a {@link PlanCommand}.
+     */
     @Test
     public void parse_validArgs_returnsPlanCommand() {
         PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, new Plan(VALID_PLAN_AMY));
@@ -79,6 +97,9 @@ public class PlanCommandParserTest {
         assertParseSuccess(parser, INDEX_FIRST_PERSON.getOneBased() + " " + PLAN_DESC_AMY, expectedCommand);
     }
 
+    /**
+     * Parses plan values in a case-insensitive manner.
+     */
     @Test
     public void parse_caseInsensitiveValue_success() {
         PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, new Plan("PUSH"));
@@ -86,6 +107,9 @@ public class PlanCommandParserTest {
         assertParseSuccess(parser, INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "pUsH", expectedCommand);
     }
 
+    /**
+     * Parses multi-word plan values with surrounding and internal whitespace.
+     */
     @Test
     public void parse_whitespaceInValue_success() {
         PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, new Plan("FULL BODY"));
@@ -95,6 +119,21 @@ public class PlanCommandParserTest {
                 expectedCommand);
     }
 
+    /**
+     * Parses underscore-separated multi-word category names.
+     */
+    @Test
+    public void parse_underscoreInValue_success() {
+        PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, new Plan("FULL BODY"));
+
+        assertParseSuccess(parser,
+                INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "FULL_BODY",
+                expectedCommand);
+    }
+
+    /**
+     * Fails when duplicate wp/ prefixes are provided.
+     */
     @Test
     public void parse_repeatedPlanValue_failure() {
         String validExpectedCommandString = INDEX_FIRST_PERSON.getOneBased() + " " + PLAN_DESC_AMY;

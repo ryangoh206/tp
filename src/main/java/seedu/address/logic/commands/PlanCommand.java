@@ -30,7 +30,7 @@ public class PlanCommand extends Command {
             + "  " + COMMAND_WORD + " 3 wp/";
 
     public static final String MESSAGE_SUCCESS = "Updated workout plan to %2$s for client: %1$s";
-    public static final String MESSAGE_CLEAR_SUCCESS = "Workout plan cleared for client: %1$s";
+    public static final String MESSAGE_CLEAR_SUCCESS = "Workout plan unassigned for client: %1$s";
     public static final String MESSAGE_ALREADY_CLEARED = "Workout plan is already unassigned for client: %1$s";
 
     private final Index index;
