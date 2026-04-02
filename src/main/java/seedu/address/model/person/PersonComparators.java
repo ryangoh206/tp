@@ -59,12 +59,27 @@ public class PersonComparators {
 
     static {
         COMPARATORS.put(ATTRIBUTE_NAME, Comparator.comparing(p -> p.getName().fullName.toLowerCase()));
-        COMPARATORS.put(ATTRIBUTE_LOCATION, Comparator.comparing(p -> p.getLocation().value.toLowerCase()));
+        COMPARATORS.put(ATTRIBUTE_LOCATION, (p1, p2) -> {
+            String firstLocation = p1.getLocation().value;
+            String secondLocation = p2.getLocation().value;
+            boolean isFirstEmpty = firstLocation.equals(Location.EMPTY_LOCATION);
+            boolean isSecondEmpty = secondLocation.equals(Location.EMPTY_LOCATION);
+            if (isFirstEmpty && isSecondEmpty) {
+                return 0;
+            }
+            if (isFirstEmpty) {
+                return 1;
+            }
+            if (isSecondEmpty) {
+                return -1;
+            }
+            return firstLocation.compareToIgnoreCase(secondLocation);
+        });
         COMPARATORS.put(ATTRIBUTE_DOB, Comparator.comparing(p -> p.getDateOfBirth().value));
         COMPARATORS.put(ATTRIBUTE_PHONE, Comparator.comparing(p -> p.getPhone().value));
         COMPARATORS.put(ATTRIBUTE_EMAIL, Comparator.comparing(p -> p.getEmail().value.toLowerCase()));
         COMPARATORS.put(ATTRIBUTE_ADDRESS, Comparator.comparing(p -> p.getAddress().value.toLowerCase()));
-        COMPARATORS.put(ATTRIBUTE_GENDER, Comparator.comparing(p -> p.getGender().value));
+        COMPARATORS.put(ATTRIBUTE_GENDER, Comparator.comparing(p -> p.getGender().value.name()));
         COMPARATORS.put(ATTRIBUTE_STATUS, Comparator.comparing(p -> p.getStatus().value.name()));
         COMPARATORS.put(ATTRIBUTE_PLAN, Comparator.comparing(p -> p.getPlan().value.name()));
         COMPARATORS.put(ATTRIBUTE_RATE, Comparator.comparingDouble((Person p) ->

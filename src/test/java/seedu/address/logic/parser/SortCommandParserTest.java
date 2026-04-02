@@ -1,5 +1,6 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_DUPLICATE_FIELDS;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DOB;
@@ -110,6 +111,40 @@ public class SortCommandParserTest {
     public void parse_sortByRateAscending_success() {
         SortCommand expectedCommand = new SortCommand("rate", "asc");
         assertParseSuccess(parser, " " + PREFIX_RATE, expectedCommand);
+    }
+
+    @Test
+    public void parse_duplicateAttributePrefix_throwsParseException() {
+        assertParseFailure(parser, " " + PREFIX_PHONE + " " + PREFIX_PHONE,
+                MESSAGE_DUPLICATE_FIELDS + PREFIX_PHONE);
+    }
+
+    @Test
+    public void parse_duplicateOrderPrefix_throwsParseException() {
+        assertParseFailure(parser, " " + PREFIX_NAME + " " + PREFIX_ORDER + "asc " + PREFIX_ORDER + "desc",
+                MESSAGE_DUPLICATE_FIELDS + PREFIX_ORDER);
+    }
+
+    @Test
+    public void parse_joinedAttributeAndOrderPrefix_throwsParseException() {
+        // n/o/desc has no space before o/ so it is not recognised as the order prefix;
+        // instead n/ receives the trailing value "o/desc", which is invalid
+        assertParseFailure(parser, " " + PREFIX_NAME + PREFIX_ORDER + "desc",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_attributePrefixWithTrailingGarbage_throwsParseException() {
+        // a/b/c/ — b/ and c/ are not recognised prefixes, so a/ receives value "b/c/", which is invalid
+        assertParseFailure(parser, " " + PREFIX_ADDRESS + "b/c/",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_attributePrefixWithTrailingText_throwsParseException() {
+        // dob/test o/desc — dob/ receives value "test", which is invalid even though o/desc is valid
+        assertParseFailure(parser, " " + PREFIX_DOB + "test " + PREFIX_ORDER + "desc",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
     }
 
     @Test
