@@ -287,6 +287,7 @@ Format: `sort ATTRIBUTE/ [o/ORDER]`
 * Order options:
   * `o/asc` - Ascending order (A to Z, earliest to latest, 0 to 9)
   * `o/desc` - Descending order (Z to A, latest to earliest, 9 to 0)
+* The attribute prefix and the order prefix must be separated by a space. For example, `sort n/ o/desc` is valid, but `sort n/o/desc` is not and will result in an error.
 
 Examples:
 * `sort n/` sorts all clients by name in ascending order (A to Z).

@@ -113,6 +113,14 @@ public class SortCommandParserTest {
     }
 
     @Test
+    public void parse_joinedAttributeAndOrderPrefix_throwsParseException() {
+        // n/o/desc has no space before o/ so it is not recognised as the order prefix;
+        // instead n/ receives the trailing value "o/desc", which is invalid
+        assertParseFailure(parser, " " + PREFIX_NAME + PREFIX_ORDER + "desc",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_caseInsensitiveOrder_success() {
         SortCommand expectedCommand = new SortCommand("name", "asc");
 

@@ -77,6 +77,12 @@ public class SortCommandParser implements Parser<SortCommand> {
 
         for (Map.Entry<Prefix, String> entry : PREFIX_TO_ATTRIBUTE.entrySet()) {
             if (argMultimap.getValue(entry.getKey()).isPresent()) {
+                String prefixValue = argMultimap.getValue(entry.getKey()).get();
+                if (!prefixValue.isEmpty()) {
+                    logger.finer("Attribute prefix has unexpected trailing text: " + prefixValue);
+                    throw new ParseException(
+                            String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
+                }
                 attribute = entry.getValue();
                 attributeCount++;
             }
