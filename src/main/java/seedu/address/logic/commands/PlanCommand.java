@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -33,6 +35,8 @@ public class PlanCommand extends Command {
     public static final String MESSAGE_CLEAR_SUCCESS = "Workout plan unassigned for client: %1$s";
     public static final String MESSAGE_ALREADY_CLEARED = "Workout plan is already unassigned for client: %1$s";
 
+    private static final Logger logger = LogsCenter.getLogger(PlanCommand.class);
+
     private final Index index;
     private final Plan plan;
 
@@ -53,14 +57,28 @@ public class PlanCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.info("Executing plan command for index: " + index.getOneBased());
+
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
+            logger.warning("Plan command failed due to invalid index: " + index.getOneBased());
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = new Person(
+        Person editedPerson = createEditedPerson(personToEdit);
+
+        assert editedPerson.getPlan().equals(plan) : "Edited client plan should match requested plan";
+
+        model.setPerson(personToEdit, editedPerson);
+        String message = buildResultMessage(personToEdit, editedPerson);
+        logger.fine("Plan command completed for client " + editedPerson.getName() + ": " + message);
+        return new CommandResult(message);
+    }
+
+    private Person createEditedPerson(Person personToEdit) {
+        return new Person(
                 personToEdit.getId(),
                 personToEdit.getName(),
                 personToEdit.getGender(),
@@ -77,17 +95,15 @@ public class PlanCommand extends Command {
                 personToEdit.getWeight(),
                 personToEdit.getBodyFatPercentage(),
                 personToEdit.getTags());
+    }
 
-        model.setPerson(personToEdit, editedPerson);
-
-        String message;
+    private String buildResultMessage(Person personToEdit, Person editedPerson) {
         if (plan.isUnassigned()) {
-            message = personToEdit.getPlan().isUnassigned() ? MESSAGE_ALREADY_CLEARED : MESSAGE_CLEAR_SUCCESS;
-            return new CommandResult(String.format(message, editedPerson.getName()));
-        } else {
-            message = MESSAGE_SUCCESS;
-            return new CommandResult(String.format(message, editedPerson.getName(), editedPerson.getPlan()));
+            String message = personToEdit.getPlan().isUnassigned() ? MESSAGE_ALREADY_CLEARED : MESSAGE_CLEAR_SUCCESS;
+            return String.format(message, editedPerson.getName());
         }
+
+        return String.format(MESSAGE_SUCCESS, editedPerson.getName(), editedPerson.getPlan());
     }
 
     @Override

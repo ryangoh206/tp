@@ -73,7 +73,7 @@ public class PlanCommandParserTest {
      * Parses blank wp/ value as the default unassigned plan.
      */
     @Test
-    public void parse_blankPrefixedValue_failure() {
+    public void parse_blankPrefixedValue_success() {
         PlanCommand expectedCommand = new PlanCommand(INDEX_FIRST_PERSON, Plan.getDefaultPlan());
         assertParseSuccess(parser, INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "   ", expectedCommand);
     }

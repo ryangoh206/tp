@@ -157,7 +157,7 @@ Examples:
 
 ### Assigning a client's workout programme : `plan`
 
-Assigns / clears the workout programme of an existing client in PowerRoster.
+Assigns / unassigns the workout programme of an existing client in PowerRoster.
 
 Format: `plan INDEX wp/PLAN_CATEGORY`
 
