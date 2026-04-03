@@ -329,7 +329,7 @@ Format: `log INDEX [time/TIME] [l/LOCATION]`
 * Logs a workout session for the client at the specified `INDEX`
 * The index refers to the index number shown in the displayed client list.
 * The index **must be a positive integer** 1, 2, 3, ...
-* `TIME` must be a valid Datetime not in the future, nor more than 50 years in the past.
+* `TIME` must be a valid date and time not in the future, nor more than 50 years in the past.
 * `TIME` must be in the format: "DD/MM/YYYY HH:mm"
 * If `TIME` is not declared, the current time will be used.
 * If `LOCATION` is not specified, the client's preset location will be used.
