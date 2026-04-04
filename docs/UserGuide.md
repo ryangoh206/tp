@@ -111,6 +111,9 @@ Shows a list of all clients in PowerRoster.
 
 Format: `list`
 
+* `list` resets any active filter and shows all clients.
+* If a sort order is currently active, that sort order is preserved when showing all clients.
+
 ### Viewing a client's full profile : `view`
 
 Shows the full profile of a client in the Client Details panel.
