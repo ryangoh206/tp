@@ -19,7 +19,7 @@ public class SortCommand extends Command {
     public static final String COMMAND_WORD = "sort";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Sorts the person list by the specified attribute.\n"
+            + ": Sorts the client list by the specified attribute.\n"
             + "Parameters: ATTRIBUTE/ [o/ORDER]\n"
             + "Supported attributes: n/ (name), l/ (location), dob/ (date of birth), "
             + "p/ (phone), e/ (email), a/ (address), g/ (gender), "
