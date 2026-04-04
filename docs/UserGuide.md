@@ -91,6 +91,9 @@ Adds a client to PowerRoster.
 
 Format: `add n/NAME g/GENDER dob/DATE_OF_BIRTH p/PHONE_NUMBER e/EMAIL_ADDRESS a/ADDRESS [l/LOCATION] [t/TAG]…​​`
 
+* `GENDER` must be either `M` or `F` (case-insensitive)
+* `DATE_OF_BIRTH` must follow the format 'DD/MM/YYYY'
+* `DATE_OF_BIRTH` must be a valid date, not in the future, and not more than 100 years in the past.
 * If `l/LOCATION` is omitted, the client is treated as having no specified location and the UI displays `N/A`.
 
 <box type="tip" seamless>
@@ -157,21 +160,22 @@ Examples:
 
 ### Assigning a client's workout programme : `plan`
 
-Assigns / clears the workout programme of an existing client in PowerRoster.
+Assigns / unassigns the workout programme of an existing client in PowerRoster.
 
 Format: `plan INDEX wp/PLAN_CATEGORY`
 
-* Assigns/clears the workout programme of the client at the specified `INDEX`. The index refers to the index number shown in the displayed client list. The index **must be a positive integer** 1, 2, 3, ...
+* Assigns/unassigns the workout programme of the client at the specified `INDEX`. The index refers to the index number shown in the displayed client list. The index **must be a positive integer** 1, 2, 3, ...
 * The `wp/` prefix is required.
 * `PLAN_CATEGORY` must be one of: `PUSH`, `PULL`, `LEGS`, `CORE`, `CARDIO`, `MOBILITY`, `FULL BODY`, `CONDITIONING` (case-insensitive).
-* Entering `wp/` with no value clears the client's assigned workout programme.
+* For multi-word categories, spaces, hyphens, and underscores are all accepted as separators.
+* Entering `wp/` with no value unassigns the client's assigned workout programme.
 * Duplicate `wp/` prefixes are not allowed.
 * Workout programmes can only be changed using `plan` (not `edit`).
 
 Examples:
 * `plan 1 wp/PUSH` assigns the 1st client to the `PUSH` programme.
 * `plan 2 wp/full body` assigns the 2nd client to the `FULL BODY` programme.
-* `plan 3 wp/` clears the 3rd client's workout programme.
+* `plan 3 wp/` unassigns the 3rd client's workout programme.
 
 ### Setting a client's session rate : `rate`
 
@@ -200,9 +204,11 @@ Format: `measure INDEX [h/HEIGHT_CM] [w/WEIGHT_KG] [bf/BODY_FAT_PERCENTAGE]`
 
 * Sets/clears one or more body measurements of the client at the specified `INDEX`. The index refers to the index number shown in the displayed client list. The index **must be a positive integer** 1, 2, 3, ...
 * At least one of `h/`, `w/`, or `bf/` must be provided.
+* `measure INDEX` without any of `h/`, `w/`, or `bf/` is invalid (e.g., `measure 1`).
 * `HEIGHT_CM` must be either blank or a number in cm between `50.0` and `300.0`, with up to 1 decimal place.
 * `WEIGHT_KG` must be either blank or a number in kg between `20.0` and `500.0`, with up to 1 decimal place.
 * `BODY_FAT_PERCENTAGE` must be either blank or a number between `1.0` and `75.0`, with up to 1 decimal place.
+* Trailing-dot values such as `170.` are accepted and normalized to 1 decimal place when stored and displayed in the UI.
 * Entering `h/`, `w/`, or `bf/` with no value clears that specific measurement.
 * Measurements can only be changed using `measure` (not `edit`).
 
@@ -222,6 +228,8 @@ Format: `status INDEX s/STATUS`
 * The index refers to the index number shown in the displayed client list.
 * The index **must be a positive integer** 1, 2, 3, …​
 * `STATUS` must be either `active` or `inactive` (case-insensitive).
+* Provide only one status prefix (e.g., `s/active`). Providing it more than once (e.g. `status 1 s/active s/inactive`) will result in an error.
+* If the client's status is already set to the specified value, a message will be shown and no change will be made.
 * New clients are automatically set to `active` status when added.
 * Use this feature to mark clients as inactive while retaining their records for future reference.
 
@@ -274,10 +282,9 @@ Sorts the client list by a specified attribute in ascending or descending order.
 
 Format: `sort ATTRIBUTE/ [o/ORDER]`
 
-* Sorts the entire client list by the specified attribute.
+* Sorts the **currently displayed** client list by the specified attribute. If a filter is active, only the filtered results are sorted; if no filter is active, the entire client list is sorted.
 * Only one attribute can be specified at a time.
 * The order parameter is optional and defaults to ascending (`asc`) if not specified.
-* Sorting works with filtering - you can filter clients first, then sort the filtered results.
 * Supported attributes:
   * `n/` - Sort by name
   * `l/` - Sort by location
@@ -292,16 +299,18 @@ Format: `sort ATTRIBUTE/ [o/ORDER]`
 * Order options:
   * `o/asc` - Ascending order (A to Z, earliest to latest, 0 to 9)
   * `o/desc` - Descending order (Z to A, latest to earliest, 9 to 0)
+* The attribute prefix and the order prefix must be separated by a space. For example, `sort n/ o/desc` is valid, but `sort n/o/desc` is not and will result in an error.
+* Clients with no location set are always sorted to the **end** of the list in ascending order, and to the **top** of the list in descending order, so they do not interleave with real location names.
 
 Examples:
-* `sort n/` sorts all clients by name in ascending order (A to Z).
-* `sort n/ o/desc` sorts all clients by name in descending order (Z to A).
-* `sort dob/ o/asc` sorts all clients by date of birth in ascending order (oldest to youngest).
-* `sort l/` sorts all clients by gym location in ascending order.
-* `sort s/` sorts all clients by status, active clients first.
-* `sort r/ o/desc` sorts all clients by session rate, highest rate first.
-* `sort wp/` sorts all clients by workout plan alphabetically.
-* `filter l/Clementi` followed by `sort n/` filters clients at Clementi locations, then sorts them by name.
+* `sort n/` sorts the displayed client list by name in ascending order (A to Z).
+* `sort n/ o/desc` sorts the displayed client list by name in descending order (Z to A).
+* `sort dob/ o/asc` sorts the displayed client list by date of birth in ascending order (oldest to youngest).
+* `sort l/` sorts the displayed client list by gym location in ascending order.
+* `sort s/` sorts the displayed client list by status, active clients first.
+* `sort r/ o/desc` sorts the displayed client list by session rate, highest rate first.
+* `sort wp/` sorts the displayed client list by workout plan alphabetically.
+* `filter l/Clementi` followed by `sort n/` filters clients at Clementi locations, then sorts only those filtered results by name.
 
 
 ### Deleting a client : `delete`
@@ -315,7 +324,7 @@ Format: `delete INDEX`
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd client in the address book.
+* `list` followed by `delete 2` deletes the 2nd client in PowerRoster.
 * `find Betsy` followed by `delete 1` deletes the 1st client in the results of the `find` command.
 
 ### Logging a workout session : `log`
@@ -326,8 +335,11 @@ Format: `log INDEX [time/TIME] [l/LOCATION]`
 * Logs a workout session for the client at the specified `INDEX`
 * The index refers to the index number shown in the displayed client list.
 * The index **must be a positive integer** 1, 2, 3, ...
+* `TIME` must be a valid date and time not in the future, nor more than 50 years in the past.
+* `TIME` must be in the format: "DD/MM/YYYY HH:mm"
 * If `TIME` is not declared, the current time will be used.
 * If `LOCATION` is not specified, the client's preset location will be used.
+* If `LOCATION` is not specified and the client does not have a preset location, `N/A` will be used.
 
 Examples:
 * `log 1` Logs a workout for the first client in the displayed list using the current time and their specified location.
@@ -348,7 +360,7 @@ Examples:
 
 ### Clearing all entries : `clear`
 
-Clears all entries from the address book.
+Clears all entries from PowerRoster.
 
 Format: `clear`
 
@@ -377,6 +389,16 @@ Furthermore, certain edits can cause the PowerRoster to behave in unexpected way
 
 _Details coming soon ..._
 
+### Viewing all workout logs `[coming soon]`
+* Users will be able to view the entire workout log history of a specified client.
+
+_Details coming soon ..._
+
+### Editing and Deleting workout logs `[coming soon]`
+* Users will be able to edit and delete workout logs.
+
+_Details coming soon ..._
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
@@ -400,6 +422,8 @@ Action     | Format, Examples
 **Add**    | `add n/NAME g/GENDER dob/DATE_OF_BIRTH p/PHONE_NUMBER e/EMAIL_ADDRESS a/ADDRESS [l/LOCATION] [t/TAG]…​` <br> e.g., `add n/James Ho g/M dob/09/12/1977 p/92224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/beginner`
 **Clear**  | `clear`
 **Delete** | `delete INDEX`<br> e.g., `delete 3`
+**Log**    | `log INDEX [time/TIME] [l/LOCATION]` <br> e.g., `log 2 l/Sengkang ActiveSG Gym`
+**Last**   | `last INDEX` <br> e.g., `last 5`
 **Edit**   | `edit INDEX [n/NAME] [g/GENDER] [dob/DATE_OF_BIRTH] [p/PHONE] [e/EMAIL] [a/ADDRESS] [l/LOCATION] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Note**   | `note INDEX n/NOTE` or `note INDEX a/NOTE`<br> e.g., `note 1 n/Prefers morning sessions.`
 **Plan**   | `plan INDEX wp/PLAN_CATEGORY`<br> e.g., `plan 1 wp/PUSH`, `plan 2 wp/FULL BODY`, `plan 3 wp/`

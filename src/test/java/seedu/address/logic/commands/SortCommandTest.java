@@ -19,11 +19,14 @@ import java.util.Comparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.WorkoutLogBook;
+import seedu.address.model.person.Location;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code SortCommand}.
@@ -88,11 +91,58 @@ public class SortCommandTest {
     @Test
     public void execute_sortByLocationAscending_success() {
         String expectedMessage = String.format(SortCommand.MESSAGE_SUCCESS, "location", "asc");
-        Comparator<Person> locationComparator = Comparator.comparing(p -> p.getLocation().value.toLowerCase());
+        Comparator<Person> locationComparator = (p1, p2) -> {
+            String firstLocation = p1.getLocation().value;
+            String secondLocation = p2.getLocation().value;
+            boolean isFirstEmpty = firstLocation.equals(Location.EMPTY_LOCATION);
+            boolean isSecondEmpty = secondLocation.equals(Location.EMPTY_LOCATION);
+            if (isFirstEmpty && isSecondEmpty) {
+                return 0;
+            }
+            if (isFirstEmpty) {
+                return 1;
+            }
+            if (isSecondEmpty) {
+                return -1;
+            }
+            return firstLocation.compareToIgnoreCase(secondLocation);
+        };
         SortCommand command = new SortCommand("location", "asc");
         expectedModel.updatePersonListComparator(locationComparator);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(7, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void execute_sortByLocationAscending_unspecifiedLocationLast() {
+        Person noLocation = new PersonBuilder(ALICE).withLocation(Location.EMPTY_LOCATION).build();
+        AddressBook ab = new AddressBook();
+        ab.addPerson(noLocation);
+        ab.addPerson(BENSON); // "Clementi ActiveSG Gym"
+        ab.addPerson(CARL); // "Anytime Fitness Tampines East"
+        Model testModel = new ModelManager(ab, new UserPrefs(), new WorkoutLogBook());
+
+        SortCommand command = new SortCommand("location", "asc");
+        command.execute(testModel);
+
+        // unspecified should be last; real locations sorted alphabetically before it
+        assertEquals(noLocation, testModel.getFilteredPersonList().get(2));
+    }
+
+    @Test
+    public void execute_sortByLocationDescending_unspecifiedLocationFirst() {
+        Person noLocation = new PersonBuilder(ALICE).withLocation(Location.EMPTY_LOCATION).build();
+        AddressBook ab = new AddressBook();
+        ab.addPerson(noLocation);
+        ab.addPerson(BENSON); // "Clementi ActiveSG Gym"
+        ab.addPerson(CARL); // "Anytime Fitness Tampines East"
+        Model testModel = new ModelManager(ab, new UserPrefs(), new WorkoutLogBook());
+
+        SortCommand command = new SortCommand("location", "desc");
+        command.execute(testModel);
+
+        // unspecified should be first when descending
+        assertEquals(noLocation, testModel.getFilteredPersonList().get(0));
     }
 
     @Test
@@ -156,12 +206,13 @@ public class SortCommandTest {
     @Test
     public void execute_sortByGenderAscending_success() {
         String expectedMessage = String.format(SortCommand.MESSAGE_SUCCESS, "gender", "asc");
-        Comparator<Person> genderComparator = Comparator.comparing(p -> p.getGender().value);
+        Comparator<Person> genderComparator = Comparator.comparing(p -> p.getGender().value.name());
         SortCommand command = new SortCommand("gender", "asc");
         expectedModel.updatePersonListComparator(genderComparator);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
-        // Just verify the command executed successfully and list has items
-        assertTrue(model.getFilteredPersonList().size() > 0);
+        // F (female) before M (male) alphabetically: ALICE, ELLE, FIONA, BENSON, CARL, DANIEL, GEORGE
+        assertEquals(Arrays.asList(ALICE, ELLE, FIONA, BENSON, CARL, DANIEL, GEORGE),
+                model.getFilteredPersonList());
     }
 
     @Test
