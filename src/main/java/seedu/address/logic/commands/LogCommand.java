@@ -68,8 +68,8 @@ public class LogCommand extends Command {
 
         logger.info("Executing log command for client at index " + targetIndex.getOneBased());
 
-        assert time != null : "Time parameters should have been parsed and checked at this point";
-        assert location != null : "Location parameters should have been parsed and checked at this point";
+        assert time != null : "Time should always be initialised";
+        assert location != null : "Location should always be initialised, use empty string for unspecified location";
 
         List<Person> lastShownList = model.getFilteredPersonList();
 

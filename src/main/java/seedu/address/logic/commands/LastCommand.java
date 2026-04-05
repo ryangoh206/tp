@@ -60,7 +60,7 @@ public class LastCommand extends Command {
         Person personToSearch = lastShownList.get(targetIndex.getZeroBased());
         WorkoutLog latest = model.lastLog(personToSearch);
         if (latest == null) {
-            logger.warning("Last command failed due to no logs found");
+            logger.info("No logs found for specified client");
             return new CommandResult(String.format(MESSAGE_NO_LOGS_FOUND_FAILURE, personToSearch.getName()));
         }
 
@@ -68,7 +68,7 @@ public class LastCommand extends Command {
                 ? UNSET_LOCATION_DISPLAY
                 : latest.getLocation().toString();
 
-        logger.fine("Successfully returned most recent workout for client at index: " + targetIndex.getOneBased());
+        logger.fine("Last command executed successfully for client at index: " + targetIndex.getOneBased());
 
         return new CommandResult(String.format(MESSAGE_RETRIEVE_LOG_SUCCESS,
                 personToSearch.getName(),
