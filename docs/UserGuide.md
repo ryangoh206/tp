@@ -407,6 +407,11 @@ _Details coming soon ..._
 
 _Details coming soon ..._
 
+### More information to be recorded in workout logs `[coming soon]`
+* Workout Logs will hold more information regarding the specific workout. (E.g. Exercises, Sets, Reps etc...)
+
+_Details coming soon ..._
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## FAQ
