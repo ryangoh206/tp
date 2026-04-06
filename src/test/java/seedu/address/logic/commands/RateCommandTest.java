@@ -111,19 +111,25 @@ public class RateCommandTest {
         final RateCommand standardCommand =
                 new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_AMY));
 
+        // EP: same value for all significant fields
         RateCommand commandWithSameValues =
                 new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_AMY));
         assertTrue(standardCommand.equals(commandWithSameValues));
 
+        // EP: same object reference
         assertTrue(standardCommand.equals(standardCommand));
 
+        // EP: null comparison
         assertFalse(standardCommand.equals(null));
 
+        // EP: different runtime type
         assertFalse(standardCommand.equals(new ClearCommand()));
 
+        // EP: same type, different index
         assertFalse(standardCommand
                 .equals(new RateCommand(INDEX_SECOND_PERSON, new Rate(VALID_RATE_AMY))));
 
+        // EP: same type, different rate payload
         assertFalse(standardCommand
                 .equals(new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_BOB))));
     }
