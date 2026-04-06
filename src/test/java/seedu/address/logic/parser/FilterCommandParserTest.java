@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ import seedu.address.model.person.LocationContainsKeywordsPredicate;
 
 public class FilterCommandParserTest {
 
-    private FilterCommandParser parser = new FilterCommandParser();
+    private final FilterCommandParser parser = new FilterCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
@@ -44,33 +45,26 @@ public class FilterCommandParserTest {
     @Test
     public void parse_validArgs_returnsFilterCommand() {
         // EP: single valid phrase.
-        String[] testSingleLocationArray = {"Anytime Fitness Jurong"};
-        FilterCommand expectedSingleFilterCommand =
-                new FilterCommand(new LocationContainsKeywordsPredicate(Arrays.asList(testSingleLocationArray)));
-        assertParseSuccess(parser, " l/Anytime Fitness Jurong", expectedSingleFilterCommand);
+        assertParsesToCommand(" l/Anytime Fitness Jurong", "Anytime Fitness Jurong");
 
         // EP: valid phrase requiring whitespace normalization.
-        FilterCommand expectedNormalizedSingleFilterCommand =
-                new FilterCommand(new LocationContainsKeywordsPredicate(Arrays.asList(testSingleLocationArray)));
-        assertParseSuccess(parser, " l/Anytime   Fitness    Jurong", expectedNormalizedSingleFilterCommand);
+        assertParsesToCommand(" l/Anytime   Fitness    Jurong", "Anytime Fitness Jurong");
 
         // EP: explicit empty phrase (clear/missing-location filter semantics).
         // BVA: empty string value right after prefix.
-        FilterCommand expectedBlankFilterCommand =
-                new FilterCommand(new LocationContainsKeywordsPredicate(Arrays.asList("")));
-        assertParseSuccess(parser, " l/", expectedBlankFilterCommand);
+        assertParsesToCommand(" l/", "");
 
         // EP: multiple valid l/ phrases.
-        FilterCommand expectedMultiplePhrasesFilterCommand =
-                new FilterCommand(new LocationContainsKeywordsPredicate(
-                        Arrays.asList("Anytime Fitness Jurong", "Clementi")));
-        assertParseSuccess(parser, " l/Anytime Fitness Jurong l/Clementi",
-                expectedMultiplePhrasesFilterCommand);
+        assertParsesToCommand(" l/Anytime Fitness Jurong l/Clementi", "Anytime Fitness Jurong", "Clementi");
 
         // EP: case-variant phrases should still parse successfully.
-        FilterCommand expectedMixedCaseFilterCommand =
-                new FilterCommand(new LocationContainsKeywordsPredicate(
-                        Arrays.asList("aNyTiMe FiTnEsS jUrOnG", "cLeMeNtI")));
-        assertParseSuccess(parser, " l/aNyTiMe FiTnEsS jUrOnG l/cLeMeNtI", expectedMixedCaseFilterCommand);
+        assertParsesToCommand(" l/aNyTiMe FiTnEsS jUrOnG l/cLeMeNtI", "aNyTiMe FiTnEsS jUrOnG", "cLeMeNtI");
+    }
+
+    private void assertParsesToCommand(String userInput, String... expectedPhrases) {
+        List<String> expectedPhraseList = Arrays.asList(expectedPhrases);
+        FilterCommand expectedCommand =
+                new FilterCommand(new LocationContainsKeywordsPredicate(expectedPhraseList));
+        assertParseSuccess(parser, userInput, expectedCommand);
     }
 }
