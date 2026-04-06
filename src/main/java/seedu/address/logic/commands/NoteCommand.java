@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -34,7 +36,10 @@ public class NoteCommand extends Command {
     public static final String MESSAGE_NOCHANGE_SUCCESS =
             "No changes made to note for client: %1$s";
     public static final String MESSAGE_DELETE_SUCCESS = "Note deleted from client: %1$s";
+    public static final String MESSAGE_NOTE_ALREADY_CLEARED = "Note is already cleared for client: %1$s";
     public static final String MESSAGE_ARGUMENTS = "Index: %1$d, Note: %2$s";
+
+    private static final Logger logger = LogsCenter.getLogger(NoteCommand.class);
 
     private final Index index;
     private final Note note;
@@ -59,29 +64,39 @@ public class NoteCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
+        logger.info("Executing note command for index: " + index.getOneBased());
         List<Person> lastShownList = model.getFilteredPersonList();
         if (index.getZeroBased() >= lastShownList.size()) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
 
         Person personToEdit = lastShownList.get(index.getZeroBased());
-        Note finalNote;
-        if (isAppend) {
-            String existingNote = personToEdit.getNote().value;
-            String trimmedNewNote = note.value.trim();
+        Note finalNote = buildFinalNote(personToEdit);
+        Person editedPerson = createPersonWithUpdatedNote(personToEdit, finalNote);
+        model.setPerson(personToEdit, editedPerson);
+        return new CommandResult(generateSuccessMessage(editedPerson, personToEdit, finalNote));
+    }
 
-            if (existingNote.isEmpty()) {
-                finalNote = new Note(trimmedNewNote);
-            } else if (trimmedNewNote.isEmpty()) {
-                finalNote = new Note(existingNote);
-            } else {
-                finalNote = new Note(existingNote + " " + trimmedNewNote);
-            }
-        } else {
-            finalNote = note;
+    private Note buildFinalNote(Person personToEdit) {
+        if (!isAppend) {
+            return note;
         }
 
-        Person editedPerson = new Person(
+        String existingNote = personToEdit.getNote().value;
+        String appendedNote = note.value.trim();
+
+        if (existingNote.isEmpty()) {
+            return new Note(appendedNote);
+        }
+        if (appendedNote.isEmpty()) {
+            return new Note(existingNote);
+        }
+        return new Note(existingNote + " " + appendedNote);
+    }
+
+    private Person createPersonWithUpdatedNote(Person personToEdit, Note finalNote) {
+        return new Person(
                 personToEdit.getId(),
                 personToEdit.getName(),
                 personToEdit.getGender(),
@@ -98,8 +113,6 @@ public class NoteCommand extends Command {
                 personToEdit.getWeight(),
                 personToEdit.getBodyFatPercentage(),
                 personToEdit.getTags());
-        model.setPerson(personToEdit, editedPerson);
-        return new CommandResult(generateSuccessMessage(editedPerson, personToEdit, finalNote));
     }
 
     /**
@@ -112,14 +125,19 @@ public class NoteCommand extends Command {
      * @param finalNote the final note after addition/appending
      */
     private String generateSuccessMessage(Person editedPerson, Person personToEdit, Note finalNote) {
-        String message;
         if (isAppend && editedPerson.getNote().value.equals(personToEdit.getNote().value)) {
-            message = MESSAGE_NOCHANGE_SUCCESS;
-        } else if (isAppend && !finalNote.value.isEmpty()) {
-            message = MESSAGE_APPEND_SUCCESS;
-        } else {
-            message = !finalNote.value.isEmpty() ? MESSAGE_ADD_SUCCESS : MESSAGE_DELETE_SUCCESS;
+            return String.format(MESSAGE_NOCHANGE_SUCCESS, Messages.format(editedPerson));
         }
+
+        if (isAppend && !finalNote.value.isEmpty()) {
+            return String.format(MESSAGE_APPEND_SUCCESS, Messages.format(editedPerson));
+        }
+
+        if (finalNote.value.isEmpty() && personToEdit.getNote().value.isEmpty()) {
+            return String.format(MESSAGE_NOTE_ALREADY_CLEARED, Messages.format(editedPerson));
+        }
+
+        String message = finalNote.value.isEmpty() ? MESSAGE_DELETE_SUCCESS : MESSAGE_ADD_SUCCESS;
         return String.format(message, Messages.format(editedPerson));
     }
 

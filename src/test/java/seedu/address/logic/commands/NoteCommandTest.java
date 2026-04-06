@@ -152,6 +152,24 @@ public class NoteCommandTest {
     }
 
     @Test
+    public void execute_deleteNoteWhenAlreadyCleared_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personWithEmptyNote = new PersonBuilder(firstPerson).withNote("").build();
+        model.setPerson(firstPerson, personWithEmptyNote);
+
+        NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), false);
+
+        String expectedMessage = String.format(NoteCommand.MESSAGE_NOTE_ALREADY_CLEARED,
+                Messages.format(personWithEmptyNote));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
+        expectedModel.setPerson(personWithEmptyNote, personWithEmptyNote);
+
+        assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         NoteCommand noteCommand = new NoteCommand(outOfBoundIndex, new Note(VALID_NOTE_BOB), false);

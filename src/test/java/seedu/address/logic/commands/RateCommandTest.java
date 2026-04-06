@@ -88,6 +88,24 @@ public class RateCommandTest {
     }
 
     @Test
+    public void execute_setSameRate_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personWithRate = new PersonBuilder(firstPerson).withRate(VALID_RATE_BOB).build();
+        model.setPerson(firstPerson, personWithRate);
+
+        RateCommand rateCommand = new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_BOB));
+
+        String expectedMessage =
+                        String.format(RateCommand.MESSAGE_NO_CHANGE_SUCCESS, personWithRate.getName());
+
+        Model expectedModel =
+            new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), getTypicalWorkoutLogBook());
+        expectedModel.setPerson(personWithRate, personWithRate);
+
+        assertCommandSuccess(rateCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         RateCommand rateCommand = new RateCommand(outOfBoundIndex, new Rate(VALID_RATE_BOB));

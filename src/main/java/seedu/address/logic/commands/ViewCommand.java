@@ -3,7 +3,9 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
@@ -26,15 +28,24 @@ public class ViewCommand extends Command {
 
     public static final String MESSAGE_VIEW_PERSON_SUCCESS = "Viewing: %1$s";
 
+    private static final Logger logger = LogsCenter.getLogger(ViewCommand.class);
+
     private final Index targetIndex;
 
+    /**
+     * Creates a ViewCommand to display a person by index in the current filtered list.
+     *
+     * @param targetIndex index of the person in the filtered list.
+     */
     public ViewCommand(Index targetIndex) {
+        requireNonNull(targetIndex);
         this.targetIndex = targetIndex;
     }
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
+        logger.info("Executing view command for index: " + targetIndex.getOneBased());
         List<Person> lastShownList = model.getFilteredPersonList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
