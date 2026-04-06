@@ -267,10 +267,13 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * Clients matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 * You can run `sort` after `find` to sort only the matching results.
+* If a sort order is currently active, it is preserved in the find results.
 
 Examples:
 * `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
+* `find alex david` returns `Alex Yeoh`, `David Li`
+
+![Find command result showing matched clients](images/findResult.png)
 
 ### Filtering clients by location: `filter`
 
@@ -285,12 +288,15 @@ Format: `filter l/LOCATION_PHRASE [l/MORE_LOCATION_PHRASES]...`
 * Extra spaces within a phrase are normalised. e.g. `filter l/Anytime   Fitness` behaves the same as `filter l/Anytime Fitness`.
 * Entering `l/` with no value filters clients with no specified location.
 * If multiple `l/` prefixes are provided, each must have a non-blank value. e.g. `filter l/Clementi l/` is invalid.
+* If a sort order is currently active, it is preserved in the filter results.
 
 Examples:
 * `filter l/Clementi` returns all clients whose locations contain the phrase `Clementi` such as `Clementi ActiveSG Gym` and `Anytime Fitness Clementi`.
 * `filter l/Anytime Fitness Jurong` returns all clients whose locations contain the phrase `Anytime Fitness Jurong` such as `Anytime Fitness Jurong East` but not `Anytime Fitness Clementi` or `Jurong Point ActiveSG Gym`.
 * `filter l/Anytime Fitness l/Clementi` returns clients whose locations contain `Anytime Fitness` or `Clementi`.
 * `filter l/` returns clients with no specified location.
+
+![Filter command result showing location-filtered clients](images/filterResult.png)
 
 ### Sorting clients: `sort`
 
@@ -328,7 +334,9 @@ Examples:
 * `sort s/` sorts the displayed client list by status, active clients first.
 * `sort r/ o/desc` sorts the displayed client list by session rate, highest rate first.
 * `sort wp/` sorts the displayed client list by workout plan alphabetically.
-* `filter l/Clementi` followed by `sort n/` filters clients at Clementi locations, then sorts only those filtered results by name.
+* `filter l/ActiveSG` followed by `sort n/` filters clients at Clementi locations, then sorts only those filtered results by name.
+
+![Sort command result showing reordered client list](images/sortResult.png)
 
 
 ### Deleting a client: `delete`
