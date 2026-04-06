@@ -67,7 +67,7 @@ PowerRoster is a **desktop app built to help Freelance Personal Fitness Trainers
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </box>
 
-### Viewing help : `help`
+### Viewing help: `help`
 
 Shows program usage instructions for all commands or a specific command.
 
@@ -83,6 +83,8 @@ Examples:
 * `help` shows all available commands and their usage
 * `help add` shows only the usage instructions for the add command
 * `help filter` shows only the usage instructions for the filter command
+* `help sort` shows only the usage instructions for the sort command
+* `help log` shows only the usage instructions for the log command
 
 
 ### Adding a client: `add`
@@ -110,15 +112,15 @@ Examples:
 * `add n/John Tan g/M dob/24/12/1999 p/98765432 e/johnt@example.com a/123 Sengkang East, #01-01 l/ActiveSG @ Fernvale Square t/beginner`
 * `add n/Danielle Lim g/F dob/13/06/2001 t/athlete e/danielle@example.com a/456 Jurong West, #02-02 l/GymBoxx @ JCube Mall`
 
-### Listing all clients : `list`
+### Listing all clients: `list`
 
 Shows a list of all clients in PowerRoster.
 
 Format: `list`
 
-* `list` shows all clients by resetting any active filter, while preserving the current sor order (if any).
+* `list` shows all clients by resetting any active filter, while preserving the current sort order (if any).
 
-### Viewing a client's full profile : `view`
+### Viewing a client's full profile: `view`
 
 Shows the full profile of a client in the Client Details panel.
 
@@ -131,7 +133,7 @@ Examples:
 * `view 1` shows the full profile of the 1st client in the current list.
 * `find Alex` followed by `view 1` shows the full profile of the 1st client in the filtered results.
 
-### Editing a client : `edit`
+### Editing a client: `edit`
 
 Edits an existing client in PowerRoster.
 
@@ -149,7 +151,7 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st client to be `91234567` and `johndoe@example.com` respectively.
 *  `edit 2 n/Dylan Lim t/` Edits the name of the 2nd client to be `Dylan Lim` and clears all existing tags.
 
-### Adding notes to a client : `note`
+### Adding notes to a client: `note`
 
 Adds / appends a note to an existing client in PowerRoster.
 
@@ -167,7 +169,7 @@ Examples:
 * `note 1 n/Prefers morning sessions.` adds the note `Prefers morning sessions.` to the 1st client, replacing any existing notes.
 * `note 2 a/Just recovered from a knee injury.` appends the note `Just recovered from a knee injury.` to the 2nd client's existing notes. If the 2nd client has no existing notes, this behaves the same as `n/Just recovered from a knee injury.`.
 
-### Assigning a client's workout programme : `plan`
+### Assigning a client's workout programme: `plan`
 
 Assigns / unassigns the workout programme of an existing client in PowerRoster.
 
@@ -186,7 +188,7 @@ Examples:
 * `plan 2 wp/full body` assigns the 2nd client to the `FULL BODY` programme.
 * `plan 3 wp/` unassigns the 3rd client's workout programme.
 
-### Setting a client's session rate : `rate`
+### Setting a client's session rate: `rate`
 
 Sets / clears the session rate of an existing client in PowerRoster.
 
@@ -205,7 +207,7 @@ Examples:
 * `rate 2 r/80.5` sets the 2nd client's rate to `80.50`.
 * `rate 3 r/` clears the 3rd client's rate.
 
-### Updating a client's body measurements : `measure`
+### Updating a client's body measurements: `measure`
 
 Sets / clears body measurements of an existing client in PowerRoster.
 
@@ -227,7 +229,7 @@ Examples:
 * `measure 3 h/ w/ bf/` clears all three measurements for the 3rd client.
 * `measure 4 w/` clears the 4th client's weight.
 
-### Changing a client's status : `status`
+### Changing a client's status: `status`
 
 Changes the status of an existing client in PowerRoster between active and inactive.
 
@@ -237,7 +239,7 @@ Format: `status INDEX s/STATUS`
 * The index refers to the index number shown in the displayed client list.
 * The index **must be a positive integer** 1, 2, 3, …​
 * `STATUS` must be either `active` or `inactive` (case-insensitive).
-* Provide only one status prefix (e.g., `s/active`). Providing it more than once (e.g. `status 1 s/active s/inactive`) will result in an error.
+* Repeated use of the same prefix is not allowed (e.g., `status 1 s/active s/inactive`) and will result in an error.
 * If the client's status is already set to the specified value, a message will be shown and no change will be made.
 * New clients are automatically set to `active` status when added.
 * Use this feature to mark clients as inactive while retaining their records for future reference.
@@ -257,7 +259,7 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
 * Only the name is searched.
 * Only full words will be matched e.g. `Han` will not match `Hans`
-* Persons matching at least one keyword will be returned (i.e. `OR` search).
+* Clients matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 
 Examples:
@@ -285,15 +287,18 @@ Examples:
 * `filter l/Anytime Fitness l/Clementi` returns clients whose locations contain `Anytime Fitness` or `Clementi`.
 * `filter l/` returns clients with no specified location.
 
-### Sorting clients : `sort`
+### Sorting clients: `sort`
 
 Sorts the client list by a specified attribute in ascending or descending order.
 
 Format: `sort ATTRIBUTE/ [o/ORDER]`
 
 * Sorts the **currently displayed** client list by the specified attribute. If a filter is active, only the filtered results are sorted; if no filter is active, the entire client list is sorted.
-* Only one attribute can be specified at a time.
+* Only one attribute can be specified at a time. Specifying more than one will result in an error.
+* The attribute prefix and the order prefix must be separated by a space. For example, `sort n/ o/desc` is valid, but `sort n/o/desc` is not and will result in an error.
 * The order parameter is optional and defaults to ascending (`asc`) if not specified.
+* Repeated use of the same prefix is not allowed (e.g., `sort n/ n/` or `sort n/ o/asc o/desc`) and will result in an error.
+* Once set, the sort order persists after `list`, `find`, and `filter` commands until replaced by another `sort` command.
 * Supported attributes:
   * `n/` - Sort by name
   * `l/` - Sort by location
@@ -304,11 +309,10 @@ Format: `sort ATTRIBUTE/ [o/ORDER]`
   * `g/` - Sort by gender
   * `s/` - Sort by status (active before inactive)
   * `wp/` - Sort by workout plan (alphabetical)
-  * `r/` - Sort by session rate (clients with no rate set sort first)
+  * `r/` - Sort by session rate (clients with no rate set sort to the end in ascending order)
 * Order options:
   * `o/asc` - Ascending order (A to Z, earliest to latest, 0 to 9)
   * `o/desc` - Descending order (Z to A, latest to earliest, 9 to 0)
-* The attribute prefix and the order prefix must be separated by a space. For example, `sort n/ o/desc` is valid, but `sort n/o/desc` is not and will result in an error.
 * Clients with no location set are always sorted to the **end** of the list in ascending order, and to the **top** of the list in descending order, so they do not interleave with real location names.
 
 Examples:
@@ -322,7 +326,7 @@ Examples:
 * `filter l/Clementi` followed by `sort n/` filters clients at Clementi locations, then sorts only those filtered results by name.
 
 
-### Deleting a client : `delete`
+### Deleting a client: `delete`
 
 Deletes the specified client from PowerRoster.
 
@@ -336,7 +340,7 @@ Examples:
 * `list` followed by `delete 2` deletes the 2nd client in PowerRoster.
 * `find Betsy` followed by `delete 1` deletes the 1st client in the results of the `find` command.
 
-### Logging a workout session : `log`
+### Logging a workout session: `log`
 Logs a workout for the specified client.
 
 Format: `log INDEX [time/TIME] [l/LOCATION]`
@@ -368,13 +372,13 @@ Format: `last INDEX`
 Examples:
 * `last 5` Retrieves the Date and Location of the last workout for the fifth client in the displayed list.
 
-### Clearing all entries : `clear`
+### Clearing all entries: `clear`
 
 Clears all entries from PowerRoster.
 
 Format: `clear`
 
-### Exiting the program : `exit`
+### Exiting the program: `exit`
 
 Exits the program.
 
