@@ -43,13 +43,15 @@ public class MeasureCommandParser implements Parser<MeasureCommand> {
         StringJoiner validationErrors = new StringJoiner("\n");
 
         // Parse each optional prefixed value and collect all validation failures in one pass.
-        Height height = parseOptionalValue(argMultimap, PREFIX_HEIGHT, ParserUtil::parseHeight, validationErrors);
-        Weight weight = parseOptionalValue(argMultimap, PREFIX_WEIGHT, ParserUtil::parseWeight, validationErrors);
-        BodyFatPercentage bodyFatPercentage =
+        Optional<Height> height =
+                parseOptionalValue(argMultimap, PREFIX_HEIGHT, ParserUtil::parseHeight, validationErrors);
+        Optional<Weight> weight =
+                parseOptionalValue(argMultimap, PREFIX_WEIGHT, ParserUtil::parseWeight, validationErrors);
+        Optional<BodyFatPercentage> bodyFatPercentage =
                 parseOptionalValue(argMultimap, PREFIX_BODY_FAT, ParserUtil::parseBodyFatPercentage, validationErrors);
 
         throwIfAnyValidationErrors(validationErrors);
-        return new ParsedMeasurements(height, weight, bodyFatPercentage);
+        return new ParsedMeasurements(height.orElse(null), weight.orElse(null), bodyFatPercentage.orElse(null));
     }
 
     private void throwIfAnyValidationErrors(StringJoiner validationErrors) throws ParseException {
@@ -59,11 +61,11 @@ public class MeasureCommandParser implements Parser<MeasureCommand> {
         }
     }
 
-    /** Parses one optional field and returns null when absent or invalid, while collecting parse errors. */
-    private <T> T parseOptionalValue(ArgumentMultimap argMultimap,
-                                     Prefix prefix,
-                                     FieldParser<T> parser,
-                                     StringJoiner validationErrors) {
+    /** Parses one optional field and returns Optional.empty when absent or invalid while collecting parse errors. */
+    private <T> Optional<T> parseOptionalValue(ArgumentMultimap argMultimap,
+                                               Prefix prefix,
+                                               FieldParser<T> parser,
+                                               StringJoiner validationErrors) {
         requireNonNull(argMultimap);
         requireNonNull(prefix);
         requireNonNull(parser);
@@ -71,14 +73,14 @@ public class MeasureCommandParser implements Parser<MeasureCommand> {
 
         Optional<String> rawInput = argMultimap.getValue(prefix);
         if (rawInput.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         try {
-            return parser.parse(rawInput.get());
+            return Optional.of(parser.parse(rawInput.get()));
         } catch (ParseException pe) {
             validationErrors.add(pe.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 
