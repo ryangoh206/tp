@@ -23,7 +23,13 @@ public class HelpCommand extends Command {
 
     private final String targetCommand;
 
+    /**
+     * Creates a HelpCommand.
+     *
+     * @param targetCommand the command word to look up, or empty string to show all commands
+     */
     public HelpCommand(String targetCommand) {
+        requireNonNull(targetCommand);
         this.targetCommand = targetCommand;
     }
 
