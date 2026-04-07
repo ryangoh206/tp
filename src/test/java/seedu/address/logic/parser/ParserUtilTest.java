@@ -51,11 +51,14 @@ public class ParserUtilTest {
 
     @Test
     public void parseIndex_invalidInput_throwsParseException() {
+        // EP: non-numeric index input
         assertThrows(ParseException.class, () -> ParserUtil.parseIndex("10 a"));
     }
 
     @Test
     public void parseIndex_outOfRangeInput_throwsParseException() {
+        // EP: numeric input outside int range
+        // BVA: just above Integer.MAX_VALUE boundary
         assertThrows(ParseException.class, MESSAGE_INVALID_INDEX, ()
             -> ParserUtil.parseIndex(Long.toString(Integer.MAX_VALUE + 1)));
     }
@@ -63,6 +66,8 @@ public class ParserUtilTest {
     @Test
     public void parseIndex_validInput_success() throws Exception {
         // No whitespaces
+        // EP: valid one-based index
+        // BVA: lower valid boundary (1)
         assertEquals(INDEX_FIRST_PERSON, ParserUtil.parseIndex("1"));
 
         // Leading and trailing whitespaces
@@ -71,11 +76,13 @@ public class ParserUtilTest {
 
     @Test
     public void parseName_null_throwsNullPointerException() {
+        // EP: null input partition
         assertThrows(NullPointerException.class, () -> ParserUtil.parseName((String) null));
     }
 
     @Test
     public void parseName_invalidValue_throwsParseException() {
+        // EP: invalid name format
         assertThrows(ParseException.class, () -> ParserUtil.parseName(INVALID_NAME));
     }
 
@@ -87,6 +94,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseName_validValueWithWhitespace_returnsTrimmedName() throws Exception {
+        // EP: valid content with leading/trailing whitespace
         String nameWithWhitespace = WHITESPACE + VALID_NAME + WHITESPACE;
         Name expectedName = new Name(VALID_NAME);
         assertEquals(expectedName, ParserUtil.parseName(nameWithWhitespace));
@@ -168,23 +176,29 @@ public class ParserUtilTest {
 
     @Test
     public void parseRate_invalidValue_throwsParseException() {
+        // EP: invalid decimal precision for rate
         assertThrows(ParseException.class, () -> ParserUtil.parseRate(INVALID_RATE));
     }
 
     @Test
     public void parseRate_emptyValue_returnsEmptyRate() throws Exception {
+        // EP: empty string to clear rate
+        // BVA: empty string boundary
         Rate expectedRate = new Rate("");
         assertEquals(expectedRate, ParserUtil.parseRate(""));
     }
 
     @Test
     public void parseRate_validValueWithoutWhitespace_returnsNormalisedRate() throws Exception {
+        // EP: valid numeric input
         Rate expectedRate = new Rate("120.00");
         assertEquals(expectedRate, ParserUtil.parseRate(VALID_RATE));
     }
 
     @Test
     public void parseRate_validValueWithWhitespace_returnsTrimmedNormalisedRate() throws Exception {
+        // EP: valid numeric input with surrounding whitespace to test trimming
+        // BVA: decimal without leading zero (".5")
         String rateWithWhitespace = WHITESPACE + VALID_RATE_WITHOUT_TRAILING_ZERO + WHITESPACE;
         Rate expectedRate = new Rate("0.50");
         assertEquals(expectedRate, ParserUtil.parseRate(rateWithWhitespace));
@@ -289,11 +303,14 @@ public class ParserUtilTest {
 
     @Test
     public void parseTags_collectionWithInvalidTags_throwsParseException() {
+        // EP: mixed-validity collection contains at least one invalid tag
         assertThrows(ParseException.class, () -> ParserUtil.parseTags(Arrays.asList(VALID_TAG_1, INVALID_TAG)));
     }
 
     @Test
     public void parseTags_emptyCollection_returnsEmptySet() throws Exception {
+        // EP: empty collection partition
+        // BVA: zero-sized collection
         assertTrue(ParserUtil.parseTags(Collections.emptyList()).isEmpty());
     }
 

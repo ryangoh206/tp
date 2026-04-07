@@ -88,6 +88,24 @@ public class RateCommandTest {
     }
 
     @Test
+    public void execute_setSameRate_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personWithRate = new PersonBuilder(firstPerson).withRate(VALID_RATE_BOB).build();
+        model.setPerson(firstPerson, personWithRate);
+
+        RateCommand rateCommand = new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_BOB));
+
+        String expectedMessage =
+                        String.format(RateCommand.MESSAGE_NO_CHANGE_SUCCESS, personWithRate.getName());
+
+        Model expectedModel =
+            new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), getTypicalWorkoutLogBook());
+        expectedModel.setPerson(personWithRate, personWithRate);
+
+        assertCommandSuccess(rateCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         RateCommand rateCommand = new RateCommand(outOfBoundIndex, new Rate(VALID_RATE_BOB));
@@ -111,19 +129,25 @@ public class RateCommandTest {
         final RateCommand standardCommand =
                 new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_AMY));
 
+        // EP: same value for all significant fields
         RateCommand commandWithSameValues =
                 new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_AMY));
         assertTrue(standardCommand.equals(commandWithSameValues));
 
+        // EP: same object reference
         assertTrue(standardCommand.equals(standardCommand));
 
+        // EP: null comparison
         assertFalse(standardCommand.equals(null));
 
+        // EP: different runtime type
         assertFalse(standardCommand.equals(new ClearCommand()));
 
+        // EP: same type, different index
         assertFalse(standardCommand
                 .equals(new RateCommand(INDEX_SECOND_PERSON, new Rate(VALID_RATE_AMY))));
 
+        // EP: same type, different rate payload
         assertFalse(standardCommand
                 .equals(new RateCommand(INDEX_FIRST_PERSON, new Rate(VALID_RATE_BOB))));
     }

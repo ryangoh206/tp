@@ -31,7 +31,8 @@ public class NoteCommandTest {
 
     private static final String NOTE_STUB = "Some note";
 
-    private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs(), new WorkoutLogBook());
+    private Model model =
+            new ModelManager(getTypicalAddressBook(), new UserPrefs(), new WorkoutLogBook());
 
     @Test
     public void execute_addNoteUnfilteredList_success() {
@@ -41,10 +42,11 @@ public class NoteCommandTest {
         NoteCommand noteCommand =
                 new NoteCommand(INDEX_FIRST_PERSON, new Note(editedPerson.getNote().value), false);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_ADD_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_ADD_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         expectedModel.setPerson(firstPerson, editedPerson);
 
         assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
@@ -62,10 +64,11 @@ public class NoteCommandTest {
         NoteCommand noteCommand =
                 new NoteCommand(INDEX_FIRST_PERSON, new Note(editedPerson.getNote().value), false);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_ADD_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_ADD_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
         expectedModel.setPerson(firstPerson, editedPerson);
 
@@ -80,14 +83,16 @@ public class NoteCommandTest {
 
         String appendText = "Additional text";
         String expectedNoteContent = NOTE_STUB + " " + appendText;
-        Person expectedPerson = new PersonBuilder(personWithNote).withNote(expectedNoteContent).build();
+        Person expectedPerson =
+                new PersonBuilder(personWithNote).withNote(expectedNoteContent).build();
 
         NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(appendText), true);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_APPEND_SUCCESS, Messages.format(expectedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_APPEND_SUCCESS, Messages.format(expectedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         expectedModel.setPerson(personWithNote, expectedPerson);
 
         assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
@@ -104,10 +109,11 @@ public class NoteCommandTest {
 
         NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(appendText), true);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_APPEND_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_APPEND_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         expectedModel.setPerson(personWithEmptyNote, editedPerson);
 
         assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
@@ -123,10 +129,11 @@ public class NoteCommandTest {
 
         NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), false);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_DELETE_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_DELETE_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         expectedModel.setPerson(personWithNote, editedPerson);
 
         assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
@@ -142,11 +149,30 @@ public class NoteCommandTest {
 
         NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), true);
 
-        String expectedMessage = String.format(NoteCommand.MESSAGE_NOCHANGE_SUCCESS, Messages.format(editedPerson));
+        String expectedMessage =
+                String.format(NoteCommand.MESSAGE_NOCHANGE_SUCCESS, Messages.format(editedPerson));
 
-        Model expectedModel =
-                new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs(), new WorkoutLogBook());
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
         expectedModel.setPerson(personWithNote, editedPerson);
+
+        assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_deleteNoteWhenAlreadyCleared_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personWithEmptyNote = new PersonBuilder(firstPerson).withNote("").build();
+        model.setPerson(firstPerson, personWithEmptyNote);
+
+        NoteCommand noteCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), false);
+
+        String expectedMessage = String.format(NoteCommand.MESSAGE_NOTE_ALREADY_CLEARED,
+                Messages.format(personWithEmptyNote));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()),
+                new UserPrefs(), new WorkoutLogBook());
+        expectedModel.setPerson(personWithEmptyNote, personWithEmptyNote);
 
         assertCommandSuccess(noteCommand, model, expectedMessage, expectedModel);
     }
@@ -176,28 +202,35 @@ public class NoteCommandTest {
         final NoteCommand standardCommand =
                 new NoteCommand(INDEX_FIRST_PERSON, new Note(VALID_NOTE_AMY), false);
 
+        // EP: same value-state for all significant fields
         // same values -> returns true
         NoteCommand commandWithSameValues =
                 new NoteCommand(INDEX_FIRST_PERSON, new Note(VALID_NOTE_AMY), false);
         assertTrue(standardCommand.equals(commandWithSameValues));
 
+        // EP: same object reference
         // same object -> returns true
         assertTrue(standardCommand.equals(standardCommand));
 
+        // EP: null comparison
         // null -> returns false
         assertFalse(standardCommand.equals(null));
 
+        // EP: different runtime type
         // different types -> returns false
         assertFalse(standardCommand.equals(new ClearCommand()));
 
+        // EP: same type, different index
         // different index -> returns false
         assertFalse(standardCommand
                 .equals(new NoteCommand(INDEX_SECOND_PERSON, new Note(VALID_NOTE_AMY), false)));
 
+        // EP: same type, different note payload
         // different note -> returns false
         assertFalse(standardCommand
                 .equals(new NoteCommand(INDEX_FIRST_PERSON, new Note(VALID_NOTE_BOB), false)));
 
+        // EP: same type, different append mode
         // different isAppend -> returns false
         assertFalse(standardCommand
                 .equals(new NoteCommand(INDEX_FIRST_PERSON, new Note(VALID_NOTE_AMY), true)));

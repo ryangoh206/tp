@@ -2,6 +2,10 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 
 /**
@@ -14,13 +18,18 @@ public class HelpCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Shows program usage instructions for all commands or a specific command.\n"
             + "Parameters: [COMMAND_WORD] (optional)\n"
-            + "Example: " + COMMAND_WORD + " (shows all commands) or " + COMMAND_WORD + " add (shows add command only)";
-
-    public static final String SHOWING_HELP_MESSAGE = "Opened help window.";
+            + "Example: " + COMMAND_WORD + " (shows all commands) or " + COMMAND_WORD
+            + " add (shows add command only)";
 
     private final String targetCommand;
 
+    /**
+     * Creates a HelpCommand.
+     *
+     * @param targetCommand the command word to look up, or empty string to show all commands
+     */
     public HelpCommand(String targetCommand) {
+        requireNonNull(targetCommand);
         this.targetCommand = targetCommand;
     }
 
@@ -34,68 +43,15 @@ public class HelpCommand extends Command {
         }
     }
 
-    private String getAllCommandsUsage() {
-        return AddCommand.MESSAGE_USAGE + "\n\n"
-                + DeleteCommand.MESSAGE_USAGE + "\n\n"
-                + EditCommand.MESSAGE_USAGE + "\n\n"
-                + NoteCommand.MESSAGE_USAGE + "\n\n"
-                + PlanCommand.MESSAGE_USAGE + "\n\n"
-                + StatusCommand.MESSAGE_USAGE + "\n\n"
-                + MeasureCommand.MESSAGE_USAGE + "\n\n"
-                + RateCommand.MESSAGE_USAGE + "\n\n"
-                + LogCommand.MESSAGE_USAGE + "\n\n"
-                + LastCommand.MESSAGE_USAGE + "\n\n"
-                + FindCommand.MESSAGE_USAGE + "\n\n"
-                + FilterCommand.MESSAGE_USAGE + "\n\n"
-                + SortCommand.MESSAGE_USAGE + "\n\n"
-                + ViewCommand.MESSAGE_USAGE + "\n\n"
-                + ListCommand.MESSAGE_USAGE + "\n\n"
-                + ClearCommand.MESSAGE_USAGE + "\n\n"
-                + HelpCommand.MESSAGE_USAGE + "\n\n"
-                + ExitCommand.MESSAGE_USAGE;
+    private static String getAllCommandsUsage() {
+        return CommandRegistry.getUsageMap().values().stream()
+                .collect(Collectors.joining("\n\n"));
     }
 
-    private String getCommandUsage(String targetCommand) {
-        switch (targetCommand.toLowerCase()) {
-        case AddCommand.COMMAND_WORD:
-            return AddCommand.MESSAGE_USAGE;
-        case DeleteCommand.COMMAND_WORD:
-            return DeleteCommand.MESSAGE_USAGE;
-        case EditCommand.COMMAND_WORD:
-            return EditCommand.MESSAGE_USAGE;
-        case FindCommand.COMMAND_WORD:
-            return FindCommand.MESSAGE_USAGE;
-        case ListCommand.COMMAND_WORD:
-            return ListCommand.MESSAGE_USAGE;
-        case ClearCommand.COMMAND_WORD:
-            return ClearCommand.MESSAGE_USAGE;
-        case ExitCommand.COMMAND_WORD:
-            return ExitCommand.MESSAGE_USAGE;
-        case NoteCommand.COMMAND_WORD:
-            return NoteCommand.MESSAGE_USAGE;
-        case PlanCommand.COMMAND_WORD:
-            return PlanCommand.MESSAGE_USAGE;
-        case StatusCommand.COMMAND_WORD:
-            return StatusCommand.MESSAGE_USAGE;
-        case MeasureCommand.COMMAND_WORD:
-            return MeasureCommand.MESSAGE_USAGE;
-        case RateCommand.COMMAND_WORD:
-            return RateCommand.MESSAGE_USAGE;
-        case FilterCommand.COMMAND_WORD:
-            return FilterCommand.MESSAGE_USAGE;
-        case LogCommand.COMMAND_WORD:
-            return LogCommand.MESSAGE_USAGE;
-        case LastCommand.COMMAND_WORD:
-            return LastCommand.MESSAGE_USAGE;
-        case SortCommand.COMMAND_WORD:
-            return SortCommand.MESSAGE_USAGE;
-        case ViewCommand.COMMAND_WORD:
-            return ViewCommand.MESSAGE_USAGE;
-        case COMMAND_WORD:
-            return MESSAGE_USAGE;
-        default:
-            return "Unknown command: " + targetCommand + "\n\nType 'help' to see all available commands.";
-        }
+    private static String getCommandUsage(String targetCommand) {
+        return CommandRegistry.getUsageMap().getOrDefault(
+                targetCommand.toLowerCase(),
+                "Unknown command: " + targetCommand + "\n\nType 'help' to see all available commands.");
     }
 
     @Override
@@ -110,5 +66,17 @@ public class HelpCommand extends Command {
 
         HelpCommand otherHelpCommand = (HelpCommand) other;
         return targetCommand.equals(otherHelpCommand.targetCommand);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(targetCommand);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("targetCommand", targetCommand)
+                .toString();
     }
 }

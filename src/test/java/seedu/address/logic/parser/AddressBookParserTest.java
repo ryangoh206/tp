@@ -56,6 +56,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_add() throws Exception {
+        // EP: valid add command payload routes to AddCommand parser
         Person person = new PersonBuilder().build();
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
@@ -69,6 +70,8 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_delete() throws Exception {
+        // EP: command requiring a valid one-based index
+        // BVA: lower valid index boundary (1)
         DeleteCommand command = (DeleteCommand) parser
                 .parseCommand(DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
@@ -76,6 +79,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_edit() throws Exception {
+        // EP: valid edit command with index and descriptor payload
         Person person = new PersonBuilder().build();
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
         EditCommand command = (EditCommand) parser
@@ -86,6 +90,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_note() throws Exception {
+        // EP: note command with note prefix and non-empty payload
         NoteCommand command = (NoteCommand) parser.parseCommand(NoteCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_NOTE + "New note.");
         assertEquals(new NoteCommand(INDEX_FIRST_PERSON, new Note("New note."), false), command);
@@ -93,6 +98,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_noteAppend() throws Exception {
+        // EP: note command with append prefix and non-empty payload
         NoteCommand command = (NoteCommand) parser.parseCommand(NoteCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_NOTE_APPEND + "Append text.");
         assertEquals(new NoteCommand(INDEX_FIRST_PERSON, new Note("Append text."), true), command);
@@ -100,30 +106,28 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_rate() throws Exception {
-        RateCommand command = (RateCommand) parser
-                .parseCommand(RateCommand.COMMAND_WORD + " "
+        // EP: rate command with valid decimal value
+        RateCommand command = (RateCommand) parser.parseCommand(RateCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_RATE + "120.5");
         assertEquals(new RateCommand(INDEX_FIRST_PERSON, new Rate("120.5")), command);
     }
 
     @Test
     public void parseCommand_measure() throws Exception {
-        MeasureCommand command = (MeasureCommand) parser
-                .parseCommand(MeasureCommand.COMMAND_WORD + " "
-                        + INDEX_FIRST_PERSON.getOneBased() + " "
-                        + PREFIX_HEIGHT + "175.5 "
-                        + PREFIX_WEIGHT + "72.0 "
-                        + PREFIX_BODY_FAT + "14.8");
+        // EP: valid measure command with all required measurement prefixes
+        MeasureCommand command = (MeasureCommand) parser.parseCommand(MeasureCommand.COMMAND_WORD
+                + " " + INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_HEIGHT + "175.5 "
+                + PREFIX_WEIGHT + "72.0 " + PREFIX_BODY_FAT + "14.8");
 
-        assertEquals(new MeasureCommand(INDEX_FIRST_PERSON,
-                new Height("175.5"), new Weight("72.0"), new BodyFatPercentage("14.8")), command);
+        assertEquals(new MeasureCommand(INDEX_FIRST_PERSON, new Height("175.5"), new Weight("72.0"),
+                new BodyFatPercentage("14.8")), command);
     }
 
     @Test
     public void parseCommand_plan() throws Exception {
-        PlanCommand command = (PlanCommand) parser.parseCommand(
-                PlanCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased() + " "
-                        + PREFIX_PLAN + "PUSH");
+        // EP: valid plan command with supported plan keyword
+        PlanCommand command = (PlanCommand) parser.parseCommand(PlanCommand.COMMAND_WORD + " "
+                + INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_PLAN + "PUSH");
 
         Plan expectedPlan = new Plan("PUSH");
         assertEquals(new PlanCommand(INDEX_FIRST_PERSON, expectedPlan), command);
@@ -137,6 +141,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_find() throws Exception {
+        // EP: find command with multiple keyword payload
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand command = (FindCommand) parser.parseCommand(FindCommand.COMMAND_WORD + " "
                 + keywords.stream().collect(Collectors.joining(" ")));
@@ -145,6 +150,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_filter() throws Exception {
+        // EP: prefixed keyword payload for filter command
         List<String> keywords = Arrays.asList("Anytime Buona Vista");
         FilterCommand command = (FilterCommand) parser.parseCommand(
                 FilterCommand.COMMAND_WORD + " " + PREFIX_LOCATION + "Anytime Buona Vista");
@@ -165,6 +171,8 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_view() throws Exception {
+        // EP: view command with valid one-based index
+        // BVA: lower valid index boundary (1)
         ViewCommand command = (ViewCommand) parser
                 .parseCommand(ViewCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new ViewCommand(INDEX_FIRST_PERSON), command);
@@ -172,13 +180,16 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
+        // EP: empty command partition
+        // BVA: empty input
         assertThrows(ParseException.class,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), (
-                    ) -> parser.parseCommand(""));
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), (
+                ) -> parser.parseCommand(""));
     }
 
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
+        // EP: unknown command word partition
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, (
             ) -> parser.parseCommand("unknownCommand"));
     }

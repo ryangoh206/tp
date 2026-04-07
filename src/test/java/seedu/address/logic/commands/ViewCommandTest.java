@@ -99,19 +99,24 @@ public class ViewCommandTest {
         ViewCommand viewFirstCommand = new ViewCommand(INDEX_FIRST_PERSON);
         ViewCommand viewSecondCommand = new ViewCommand(INDEX_SECOND_PERSON);
 
+        // EP: same object reference
         // same object -> returns true
         assertTrue(viewFirstCommand.equals(viewFirstCommand));
 
+        // EP: different object, same index value
         // same values -> returns true
         ViewCommand viewFirstCommandCopy = new ViewCommand(INDEX_FIRST_PERSON);
         assertTrue(viewFirstCommand.equals(viewFirstCommandCopy));
 
+        // EP: different runtime type
         // different types -> returns false
         assertFalse(viewFirstCommand.equals(1));
 
+        // EP: null comparison
         // null -> returns false
         assertFalse(viewFirstCommand.equals(null));
 
+        // EP: same type, different index value
         // different person -> returns false
         assertFalse(viewFirstCommand.equals(viewSecondCommand));
     }

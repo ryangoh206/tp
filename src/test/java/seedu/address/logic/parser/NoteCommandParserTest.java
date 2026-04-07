@@ -20,13 +20,14 @@ public class NoteCommandParserTest {
 
     @Test
     public void parse_noteWithNotePrefix_success() {
-        // With note content
+        // EP: valid index with note prefix and non-empty note content
         Index targetIndex = INDEX_FIRST_PERSON;
         String userInput = targetIndex.getOneBased() + " " + PREFIX_NOTE + nonEmptyNote;
         NoteCommand expectedCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(nonEmptyNote), false);
         assertParseSuccess(parser, userInput, expectedCommand);
 
-        // Without note content (delete)
+        // EP: valid index with note prefix and empty note content
+        // BVA: empty string note value
         userInput = targetIndex.getOneBased() + " " + PREFIX_NOTE;
         expectedCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), false);
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -34,13 +35,14 @@ public class NoteCommandParserTest {
 
     @Test
     public void parse_noteWithAppendPrefix_success() {
-        // With append content
+        // EP: valid index with append prefix and non-empty append content
         Index targetIndex = INDEX_FIRST_PERSON;
         String userInput = targetIndex.getOneBased() + " " + PREFIX_NOTE_APPEND + nonEmptyNote;
         NoteCommand expectedCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(nonEmptyNote), true);
         assertParseSuccess(parser, userInput, expectedCommand);
 
-        // Without append content (append empty string)
+        // EP: valid index with append prefix and empty append content
+        // BVA: empty string append payload
         userInput = targetIndex.getOneBased() + " " + PREFIX_NOTE_APPEND;
         expectedCommand = new NoteCommand(INDEX_FIRST_PERSON, new Note(""), true);
         assertParseSuccess(parser, userInput, expectedCommand);
@@ -51,10 +53,11 @@ public class NoteCommandParserTest {
         String expectedMessage =
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, NoteCommand.MESSAGE_USAGE);
 
-        // No parameters
+        // EP: missing index and missing prefixed argument
+        // BVA: empty command body
         assertParseFailure(parser, "", expectedMessage);
 
-        // Only prefix, no index
+        // EP: missing compulsory index only
         assertParseFailure(parser, PREFIX_NOTE + nonEmptyNote, expectedMessage);
     }
 
@@ -62,6 +65,7 @@ public class NoteCommandParserTest {
     public void parse_missingPrefix_failure() {
         String expectedMessage =
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, NoteCommand.MESSAGE_USAGE);
+        // EP: valid index + note payload but missing required note/append prefix
         assertParseFailure(parser, INDEX_FIRST_PERSON.getOneBased() + " " + nonEmptyNote,
             expectedMessage);
     }
@@ -71,6 +75,7 @@ public class NoteCommandParserTest {
         String expectedMessage =
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, NoteCommand.MESSAGE_USAGE);
 
+        // EP: mutually exclusive prefixes provided together
         String userInput = INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_NOTE + nonEmptyNote
                 + " " + PREFIX_NOTE_APPEND + nonEmptyNote;
         assertParseFailure(parser, userInput, expectedMessage);
@@ -78,6 +83,7 @@ public class NoteCommandParserTest {
 
     @Test
     public void parse_duplicateNotePrefixes_failure() {
+        // EP: duplicate note prefix in same command
         String userInput = INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_NOTE + "first"
                 + " " + PREFIX_NOTE + "second";
         assertParseFailure(parser, userInput,
@@ -86,6 +92,7 @@ public class NoteCommandParserTest {
 
     @Test
     public void parse_duplicateAppendPrefixes_failure() {
+        // EP: duplicate append prefix in same command
         String userInput = INDEX_FIRST_PERSON.getOneBased() + " " + PREFIX_NOTE_APPEND + "first"
                 + " " + PREFIX_NOTE_APPEND + "second";
         assertParseFailure(parser, userInput,
