@@ -431,8 +431,7 @@ To keep this section focused on non-trivial interactions, only unique interactio
 
       Use case ends.
 * 1b. User requests help for an unknown command.
-    * 1b1. PowerRoster informs the User that the command is unknown.
-    * 1b2. PowerRoster displays a message suggesting to view the full help guide instead.
+    * 1b1. PowerRoster informs the User that the command is unknown and suggests running `help` without arguments to view all available commands.
 
       Use case ends.
 
