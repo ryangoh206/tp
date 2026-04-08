@@ -16,7 +16,7 @@ public class StatusCommandParser implements Parser<StatusCommand> {
     /**
      * Parses the given {@code String} of arguments in the context of the StatusCommand
      * and returns a StatusCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
+     * @throws ParseException if the user input does not conform to the expected format
      */
     public StatusCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STATUS);

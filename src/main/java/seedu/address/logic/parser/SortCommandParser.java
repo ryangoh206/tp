@@ -64,7 +64,7 @@ public class SortCommandParser implements Parser<SortCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public SortCommand parse(String args) throws ParseException {
-        logger.fine("Parsing sort command with arguments: " + args);
+        logger.fine(String.format("Parsing sort command with arguments: %s", args));
 
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args,
                 PREFIX_NAME, PREFIX_GENDER, PREFIX_DOB, PREFIX_PHONE,
@@ -84,7 +84,7 @@ public class SortCommandParser implements Parser<SortCommand> {
             if (argMultimap.getValue(entry.getKey()).isPresent()) {
                 String prefixValue = argMultimap.getValue(entry.getKey()).get();
                 if (!prefixValue.isEmpty()) {
-                    logger.finer("Attribute prefix has unexpected trailing text: " + prefixValue);
+                    logger.finer(String.format("Attribute prefix has unexpected trailing text: %s", prefixValue));
                     throw new ParseException(
                             String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
                 }
@@ -103,20 +103,19 @@ public class SortCommandParser implements Parser<SortCommand> {
         if (attributeCount > 1) {
             logger.finer("Multiple attributes specified in sort command");
             throw new ParseException(
-                    "Please specify only one attribute to sort by.\n"
-                    + SortCommand.MESSAGE_USAGE);
+                    SortCommand.MESSAGE_MULTIPLE_ATTRIBUTES + "\n" + SortCommand.MESSAGE_USAGE);
         }
 
         // Determine sort order
         String order = argMultimap.getValue(PREFIX_ORDER).orElse(DEFAULT_ORDER).toLowerCase();
         if (!order.equals(ORDER_ASC) && !order.equals(ORDER_DESC)) {
-            logger.finer("Invalid order specified: " + order);
+            logger.finer(String.format("Invalid order specified: %s", order));
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE));
         }
 
         assert attribute != null : "Attribute should not be null after validation";
-        logger.fine("Sort command parsed successfully - attribute: " + attribute + ", order: " + order);
+        logger.fine(String.format("Sort command parsed successfully - attribute: %s, order: %s", attribute, order));
         return new SortCommand(attribute, order);
     }
 }
