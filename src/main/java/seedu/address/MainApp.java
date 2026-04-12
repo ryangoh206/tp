@@ -108,7 +108,7 @@ public class MainApp extends Application {
                 initialLogs = SampleDataUtil.getSampleWorkoutLogBook();
             } else if (!workoutLogBookOptional.isPresent() && isAddressBookPresent) {
                 logger.info("AddressBook detected but no WorkoutLogBook detected."
-                        + "Starting with empty WorkoutLogBook");
+                        + " Starting with empty WorkoutLogBook");
                 initialLogs = new WorkoutLogBook();
             } else {
                 initialLogs = workoutLogBookOptional.get();
