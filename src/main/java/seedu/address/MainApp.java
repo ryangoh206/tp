@@ -84,16 +84,18 @@ public class MainApp extends Application {
 
         Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData;
+        boolean isAddressBookPresent = true;
         try {
             addressBookOptional = storage.readAddressBook();
             if (!addressBookOptional.isPresent()) {
+                isAddressBookPresent = false;
                 logger.info("Creating a new data file " + storage.getAddressBookFilePath()
                         + " populated with a sample AddressBook.");
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
             logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty AddressBook.");
+                    + " Will be starting with an empty AddressBook and WorkoutLogBook");
             initialData = new AddressBook();
         }
 
@@ -101,10 +103,16 @@ public class MainApp extends Application {
         WorkoutLogBook initialLogs;
         try {
             workoutLogBookOptional = storage.readWorkoutLogBook();
-            if (!workoutLogBookOptional.isPresent()) {
+            if (!workoutLogBookOptional.isPresent() && !isAddressBookPresent) {
                 logger.info("Creating new workout log file " + storage.getWorkoutLogBookFilePath());
+                initialLogs = SampleDataUtil.getSampleWorkoutLogBook();
+            } else if (!workoutLogBookOptional.isPresent() && isAddressBookPresent) {
+                logger.info("AddressBook detected but no WorkoutLogBook detected."
+                        + "Starting with empty WorkoutLogBook");
+                initialLogs = new WorkoutLogBook();
+            } else {
+                initialLogs = workoutLogBookOptional.get();
             }
-            initialLogs = workoutLogBookOptional.orElseGet(SampleDataUtil::getSampleWorkoutLogBook);
         } catch (DataLoadingException e) {
             logger.warning("Workout Log File at " + storage.getWorkoutLogBookFilePath() + " could not be loaded."
                 + " Will be starting with empty workout log book.");
