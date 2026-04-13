@@ -277,6 +277,7 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * Only full words will be matched e.g. `Han` will not match `Hans`
 * Clients matching at least one keyword will be returned (i.e. `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
+* `find` searches within the currently displayed list. For example, after `filter l/ActiveSG`, running `find John` searches only clients in that filtered result.
 * You can run `sort` after `find` to sort only the matching results.
 * If a sort order is currently active, it is preserved in the find results.
 
